@@ -26,6 +26,17 @@ app.include_router(projects_router)
 app.include_router(alerts_router)
 app.include_router(assistant_router)
 
+@app.get("/")
+def root():
+    return {
+        "status": "online",
+        "service": "INFRAWATCH Intelligence Backend",
+        "version": "1.0.0",
+        "docs_url": "/docs",
+        "health_check": "/api/health"
+    }
+
+@app.get("/health")
 @app.get("/api/health")
 def health_check():
     return {
