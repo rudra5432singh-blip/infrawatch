@@ -1,0 +1,91 @@
+{
+  "dataset_size": 1775,
+  "train_samples": 1420,
+  "test_samples": 355,
+  "cost_overrun_model": {
+    "xgboost": {
+      "accuracy": 0.9662,
+      "precision": 0.9104,
+      "recall": 0.9104,
+      "f1": 0.9104,
+      "roc_auc": 0.9853
+    },
+    "logistic_regression_baseline": {
+      "accuracy": 0.9465,
+      "precision": 0.9286,
+      "recall": 0.7761,
+      "f1": 0.8455,
+      "roc_auc": 0.9766
+    }
+  },
+  "time_overrun_model": {
+    "xgboost": {
+      "accuracy": 0.5577,
+      "precision": 0.5849,
+      "recall": 0.6425,
+      "f1": 0.6123,
+      "roc_auc": 0.5463
+    },
+    "logistic_regression_baseline": {
+      "accuracy": 0.5352,
+      "precision": 0.547,
+      "recall": 0.8446,
+      "f1": 0.664,
+      "roc_auc": 0.487
+    }
+  },
+  "risk_score_model": {
+    "xgboost": {
+      "rmse": 21.0201,
+      "mae": 18.3128,
+      "r2": -0.0932
+    },
+    "ridge_regression_baseline": {
+      "rmse": 20.2748,
+      "mae": 17.9622,
+      "r2": -0.0171
+    }
+  },
+  "top_global_risk_drivers": [
+    {
+      "feature": "inspection_score",
+      "importance": 23.49
+    },
+    {
+      "feature": "actual_expenditure",
+      "importance": 10.63
+    },
+    {
+      "feature": "budget_utilization_rate",
+      "importance": 9.51
+    },
+    {
+      "feature": "sanctioned_duration",
+      "importance": 7.13
+    },
+    {
+      "feature": "revision_count",
+      "importance": 6.97
+    },
+    {
+      "feature": "financial_progress",
+      "importance": 6.2
+    },
+    {
+      "feature": "no_of_extensions",
+      "importance": 4.22
+    },
+    {
+      "feature": "sector_encoded",
+      "importance": 4.08
+    },
+    {
+      "feature": "physical_financial_gap",
+      "importance": 3.12
+    },
+    {
+      "feature": "disputes_count",
+      "importance": 2.82
+    }
+  ]
+}
