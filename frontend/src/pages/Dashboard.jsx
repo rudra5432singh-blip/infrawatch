@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { 
   AlertTriangle, 
   TrendingUp, 
@@ -9,7 +10,8 @@ import {
   Filter, 
   Search,
   ArrowUpRight,
-  ShieldAlert
+  ShieldAlert,
+  Sparkles
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -26,6 +28,25 @@ import {
 } from 'recharts';
 import { getStatsSummary, getStatsSector, getStatsState, getProjects, getAlerts } from '../utils/api';
 import { useCountUp } from '../hooks/useCountUp';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 14 },
+  show: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] } 
+  }
+};
 
 export default function Dashboard() {
   const [summary, setSummary] = useState(null);
@@ -102,112 +123,117 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto pb-12">
-      {/* SECTION 1 — KPI STRIP */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-        {/* KPI 1 */}
-        <div className="intel-card p-4 sm:p-5 rounded-xl relative overflow-hidden bg-white border-slate-200">
-          <div className="flex items-center justify-between text-[#64748B] text-xs font-semibold uppercase tracking-wider">
+      {/* SECTION 1 — KPI STRIP (STAGGERED FRAMER MOTION) */}
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        {/* KPI 1: Monitored Assets */}
+        <motion.div variants={itemVariants} className="glass-card p-5 rounded-2xl relative overflow-hidden group">
+          <div className="flex items-center justify-between text-[#8D8574] text-xs font-semibold uppercase tracking-wider">
             <span>Total Monitored Assets</span>
-            <div className="p-1.5 sm:p-2 rounded-lg bg-indigo-50 text-indigo-600">
-              <Layers size={16} />
+            <div className="p-2 rounded-full bg-[#EFECE6] text-[#1E1E1E] border border-[rgba(61,58,52,0.1)]">
+              <Layers size={15} />
             </div>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-[#0F172A]">
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-[#1B1C1A] tracking-tight tabular-nums">
               {totalProjectsCount.toLocaleString()}
             </span>
-            <span className="text-[10px] sm:text-xs font-mono text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">
+            <span className="badge-nominal text-[10px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full">
               100% Synced
             </span>
           </div>
-          <p className="mt-1.5 text-xs text-[#64748B]">
+          <p className="mt-2 text-xs text-[#655E4E]">
             Rs. {((summary?.total_sanctioned_cost || 0) / 1000).toFixed(1)}k Cr Sanctioned Portfolio
           </p>
-          <div className="absolute top-0 left-0 right-0 h-1 bg-indigo-500" />
-        </div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#1E1E1E]" />
+        </motion.div>
 
-        {/* KPI 2 */}
-        <div className="intel-card p-4 sm:p-5 rounded-xl relative overflow-hidden bg-white border-slate-200">
-          <div className="flex items-center justify-between text-[#64748B] text-xs font-semibold uppercase tracking-wider">
-            <span>High Risk Projects</span>
-            <div className="p-1.5 sm:p-2 rounded-lg bg-rose-50 text-rose-600">
-              <ShieldAlert size={16} />
+        {/* KPI 2: High Risk Projects */}
+        <motion.div variants={itemVariants} className="glass-card p-5 rounded-2xl relative overflow-hidden group">
+          <div className="flex items-center justify-between text-[#8D8574] text-xs font-semibold uppercase tracking-wider">
+            <span>Critical Risk Threshold</span>
+            <div className="p-2 rounded-full bg-[rgba(194,94,62,0.12)] text-[#C25E3E] border border-[rgba(194,94,62,0.22)]">
+              <ShieldAlert size={15} />
             </div>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-rose-600">
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-[#C25E3E] tracking-tight tabular-nums">
               {highRiskCount}
             </span>
-            <span className="text-[10px] sm:text-xs font-mono text-rose-700 font-semibold bg-rose-50 px-1.5 py-0.5 rounded">
-              Alert Triggered
+            <span className="badge-sienna text-[10px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full">
+              Escalation Active
             </span>
           </div>
-          <p className="mt-1.5 text-xs text-[#64748B]">
-            Score &ge; 65/100 requiring escalation
+          <p className="mt-2 text-xs text-[#655E4E]">
+            Score &ge; 65/100 under statutory review
           </p>
-          <div className="absolute top-0 left-0 right-0 h-1 bg-rose-500" />
-        </div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#C25E3E]" />
+        </motion.div>
 
-        {/* KPI 3 */}
-        <div className="intel-card p-4 sm:p-5 rounded-xl relative overflow-hidden bg-white border-slate-200">
-          <div className="flex items-center justify-between text-[#64748B] text-xs font-semibold uppercase tracking-wider">
+        {/* KPI 3: Avg Cost Escalation */}
+        <motion.div variants={itemVariants} className="glass-card p-5 rounded-2xl relative overflow-hidden group">
+          <div className="flex items-center justify-between text-[#8D8574] text-xs font-semibold uppercase tracking-wider">
             <span>Avg Cost Escalation</span>
-            <div className="p-1.5 sm:p-2 rounded-lg bg-amber-50 text-amber-600">
-              <TrendingUp size={16} />
+            <div className="p-2 rounded-full bg-[rgba(217,119,6,0.12)] text-[#D97706] border border-[rgba(217,119,6,0.22)]">
+              <TrendingUp size={15} />
             </div>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-amber-600">
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-[#D97706] tracking-tight tabular-nums">
               +{avgCostOverrun}%
             </span>
-            <span className="text-[10px] sm:text-xs font-mono text-amber-700 font-semibold bg-amber-50 px-1.5 py-0.5 rounded">
-              Cost Creep
+            <span className="badge-amber text-[10px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full">
+              Fiscal Drift
             </span>
           </div>
-          <p className="mt-1.5 text-xs text-[#64748B]">
+          <p className="mt-2 text-xs text-[#655E4E]">
             Rs. {((summary?.total_revised_cost - summary?.total_sanctioned_cost) || 0).toLocaleString()} Cr Overrun
           </p>
-          <div className="absolute top-0 left-0 right-0 h-1 bg-amber-500" />
-        </div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#D97706]" />
+        </motion.div>
 
-        {/* KPI 4 */}
-        <div className="intel-card p-4 sm:p-5 rounded-xl relative overflow-hidden bg-white border-slate-200">
-          <div className="flex items-center justify-between text-[#64748B] text-xs font-semibold uppercase tracking-wider">
+        {/* KPI 4: On-Track Execution */}
+        <motion.div variants={itemVariants} className="glass-card p-5 rounded-2xl relative overflow-hidden group">
+          <div className="flex items-center justify-between text-[#8D8574] text-xs font-semibold uppercase tracking-wider">
             <span>On-Track Execution</span>
-            <div className="p-1.5 sm:p-2 rounded-lg bg-emerald-50 text-emerald-600">
-              <CheckCircle2 size={16} />
+            <div className="p-2 rounded-full bg-[rgba(74,93,78,0.12)] text-[#4A5D4E] border border-[rgba(74,93,78,0.22)]">
+              <CheckCircle2 size={15} />
             </div>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-600">
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-[#2D3A30] tracking-tight tabular-nums">
               {onTrackPct}%
             </span>
-            <span className="text-[10px] sm:text-xs font-mono text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded">
+            <span className="badge-nominal text-[10px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full">
               Nominal Band
             </span>
           </div>
-          <p className="mt-1.5 text-xs text-[#64748B]">
+          <p className="mt-2 text-xs text-[#655E4E]">
             {summary?.low_risk_projects || 0} Assets within milestone budget
           </p>
-          <div className="absolute top-0 left-0 right-0 h-1 bg-emerald-500" />
-        </div>
-      </div>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#4A5D4E]" />
+        </motion.div>
+      </motion.div>
 
       {/* SECTION 2 — MAIN 60/40 SPLIT GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT COLUMN (60% -> 7 Cols) */}
         <div className="lg:col-span-7 space-y-6 min-w-0">
           {/* Chart 1: Sector Risk Breakdown */}
-          <div className="intel-card p-4 sm:p-6 rounded-xl">
+          <div className="glass-card p-5 sm:p-6 rounded-2xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <div>
-                <h2 className="text-sm sm:text-base font-bold text-[#0F172A]">Sector Risk Distribution</h2>
-                <p className="text-xs text-[#64748B]">High, Medium, and Low risk volume across top sectors</p>
+                <h2 className="font-serif text-base sm:text-lg font-bold text-[#1B1C1A]">Sector Risk Distribution</h2>
+                <p className="text-xs text-[#8D8574]">Volume distribution across high-capital sectors</p>
               </div>
               <div className="flex items-center gap-3 text-xs font-mono font-medium">
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-rose-500" /> High</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500" /> Med</span>
-                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" /> Low</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#C25E3E]" /> High</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#D97706]" /> Med</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#4A5D4E]" /> Low</span>
               </div>
             </div>
 
@@ -218,28 +244,37 @@ export default function Dashboard() {
                   layout="vertical"
                   margin={{ top: 5, right: 10, left: 10, bottom: 0 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
-                  <XAxis type="number" stroke="#64748B" fontSize={10} />
-                  <YAxis type="category" dataKey="sector" stroke="#64748B" fontSize={10} width={100} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(61, 58, 52, 0.08)" />
+                  <XAxis type="number" stroke="#8D8574" fontSize={10} tickLine={false} />
+                  <YAxis type="category" dataKey="sector" stroke="#655E4E" fontSize={10} width={110} tickLine={false} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '8px', color: '#0F172A', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', fontSize: '11px' }}
+                    contentStyle={{ 
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+                      backdropFilter: 'blur(12px)',
+                      borderColor: 'rgba(61, 58, 52, 0.12)', 
+                      borderRadius: '12px', 
+                      color: '#1B1C1A', 
+                      boxShadow: '0 8px 24px rgba(61, 58, 52, 0.08)', 
+                      fontSize: '11px',
+                      fontFamily: 'Plus Jakarta Sans'
+                    }}
                   />
-                  <Bar dataKey="high_risk_count" name="High Risk" stackId="a" fill="#E11D48" />
+                  <Bar dataKey="high_risk_count" name="High Risk" stackId="a" fill="#C25E3E" />
                   <Bar dataKey="medium_risk_count" name="Medium Risk" stackId="a" fill="#D97706" />
-                  <Bar dataKey="low_risk_count" name="Low Risk" stackId="a" fill="#059669" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="low_risk_count" name="Low Risk" stackId="a" fill="#4A5D4E" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Chart 2: Cost vs Time Overrun Scatter */}
-          <div className="intel-card p-4 sm:p-6 rounded-xl">
+          {/* Chart 2: Cost vs Time Overrun Scatter (Level 2: The Monolith Card) */}
+          <div className="monolith-card p-5 sm:p-6 rounded-2xl relative overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <div>
-                <h2 className="text-sm sm:text-base font-bold text-[#0F172A]">Cost vs Schedule Slippage</h2>
-                <p className="text-xs text-[#64748B]">Compounded overrun correlation cluster</p>
+                <h2 className="font-serif text-base sm:text-lg font-bold text-[#FAF9F5]">Cost vs Schedule Slippage</h2>
+                <p className="text-xs text-[#A39D8F]">Multi-dimensional overrun correlation cluster</p>
               </div>
-              <span className="text-[10px] sm:text-xs font-mono text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded font-medium self-start sm:self-auto">
+              <span className="text-[10px] sm:text-xs font-mono text-[#D97706] bg-[rgba(217,119,6,0.15)] border border-[rgba(217,119,6,0.3)] px-2.5 py-0.5 rounded-full font-medium self-start sm:self-auto">
                 Live Clustering
               </span>
             </div>
@@ -247,35 +282,37 @@ export default function Dashboard() {
             <div className="h-56 sm:h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <ScatterChart margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.08)" />
                   <XAxis 
                     type="number" 
                     dataKey="cost_overrun" 
                     name="Cost Overrun %" 
                     unit="%" 
-                    stroke="#64748B" 
+                    stroke="#A39D8F" 
                     fontSize={10} 
+                    tickLine={false}
                   />
                   <YAxis 
                     type="number" 
                     dataKey="time_overrun" 
                     name="Time Overrun %" 
                     unit="%" 
-                    stroke="#64748B" 
+                    stroke="#A39D8F" 
                     fontSize={10} 
+                    tickLine={false}
                   />
-                  <ZAxis type="number" dataKey="risk_score" range={[30, 140]} />
+                  <ZAxis type="number" dataKey="risk_score" range={[35, 140]} />
                   <Tooltip 
                     cursor={{ strokeDasharray: '3 3' }}
                     content={({ payload }) => {
                       if (!payload || !payload.length) return null;
                       const data = payload[0].payload;
                       return (
-                        <div className="bg-white border border-slate-200 p-2.5 rounded-lg text-xs space-y-1 shadow-lg">
-                          <p className="font-bold text-slate-900 line-clamp-1">{data.name}</p>
-                          <p className="text-amber-600 font-mono">Cost: +{data.cost_overrun}%</p>
-                          <p className="text-indigo-600 font-mono">Delay: +{data.time_overrun}%</p>
-                          <p className="text-rose-600 font-mono font-bold">Score: {data.risk_score}/100</p>
+                        <div className="monolith-glass p-3 rounded-xl text-xs space-y-1 shadow-2xl border border-white/10">
+                          <p className="font-bold text-[#FAF9F5] line-clamp-1">{data.name}</p>
+                          <p className="text-[#D97706] font-mono">Cost: +{data.cost_overrun}%</p>
+                          <p className="text-[#E0A96D] font-mono">Delay: +{data.time_overrun}%</p>
+                          <p className="text-[#C25E3E] font-mono font-bold">Score: {data.risk_score}/100</p>
                         </div>
                       );
                     }}
@@ -284,8 +321,8 @@ export default function Dashboard() {
                     {scatterData.map((entry, index) => (
                       <Cell 
                         key={`cell-${index}`} 
-                        fill={entry.risk_category === 'High' ? '#E11D48' : entry.risk_category === 'Medium' ? '#D97706' : '#059669'} 
-                        fillOpacity={0.8}
+                        fill={entry.risk_category === 'High' ? '#C25E3E' : entry.risk_category === 'Medium' ? '#D97706' : '#4A5D4E'} 
+                        fillOpacity={0.85}
                       />
                     ))}
                   </Scatter>
@@ -298,13 +335,13 @@ export default function Dashboard() {
         {/* RIGHT COLUMN (40% -> 5 Cols) */}
         <div className="lg:col-span-5 space-y-6 min-w-0">
           {/* Live Alert Feed */}
-          <div className="intel-card p-4 sm:p-5 rounded-xl flex flex-col h-[320px] sm:h-[350px]">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+          <div className="glass-card p-5 rounded-2xl flex flex-col h-[340px] sm:h-[370px]">
+            <div className="flex items-center justify-between pb-3 border-b border-[rgba(61,58,52,0.08)]">
               <div className="flex items-center gap-2">
-                <ShieldAlert size={16} className="text-rose-600" />
-                <h2 className="text-sm font-bold text-[#0F172A]">Surveillance Feed</h2>
+                <ShieldAlert size={16} className="text-[#C25E3E]" />
+                <h2 className="font-serif text-base font-bold text-[#1B1C1A]">Surveillance Feed</h2>
               </div>
-              <Link to="/alerts" className="text-xs font-mono text-indigo-600 hover:text-indigo-700 font-semibold flex items-center gap-1">
+              <Link to="/alerts" className="text-xs font-mono text-[#D97706] hover:text-[#1B1C1A] font-semibold flex items-center gap-1 transition-colors">
                 View All <ArrowUpRight size={12} />
               </Link>
             </div>
@@ -313,30 +350,30 @@ export default function Dashboard() {
               {recentAlerts.map(alert => (
                 <div 
                   key={alert.alert_id} 
-                  className={`p-2.5 sm:p-3 rounded-lg bg-slate-50 border ${
+                  className={`p-3 rounded-xl bg-[#FAF9F5]/70 backdrop-blur-xs border transition-all hover:bg-[#FAF9F5] ${
                     alert.severity === 'CRITICAL' 
-                      ? 'border-l-4 border-l-rose-500 border-rose-200' 
+                      ? 'border-l-4 border-l-[#C25E3E] border-[rgba(194,94,62,0.2)]' 
                       : alert.severity === 'HIGH' 
-                      ? 'border-l-4 border-l-amber-500 border-amber-200' 
-                      : 'border-l-4 border-l-indigo-500 border-indigo-200'
+                      ? 'border-l-4 border-l-[#D97706] border-[rgba(217,119,6,0.2)]' 
+                      : 'border-l-4 border-l-[#2C3E50] border-[rgba(44,62,80,0.2)]'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-1.5">
-                    <span className="text-xs font-bold text-slate-900 line-clamp-1">
+                    <span className="text-xs font-bold text-[#1B1C1A] line-clamp-1">
                       {alert.project_name}
                     </span>
-                    <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase shrink-0 ${
-                      alert.severity === 'CRITICAL' ? 'bg-rose-100 text-rose-800' :
-                      alert.severity === 'HIGH' ? 'bg-amber-100 text-amber-800' :
-                      'bg-indigo-100 text-indigo-800'
+                    <span className={`text-[9px] font-mono font-bold px-2 py-0.5 rounded-full uppercase shrink-0 ${
+                      alert.severity === 'CRITICAL' ? 'badge-sienna' :
+                      alert.severity === 'HIGH' ? 'badge-amber' :
+                      'badge-indigo'
                     }`}>
                       {alert.severity}
                     </span>
                   </div>
-                  <p className="mt-1 text-[11px] sm:text-xs text-[#475569] line-clamp-2">
+                  <p className="mt-1 text-[11px] sm:text-xs text-[#655E4E] line-clamp-2">
                     {alert.message}
                   </p>
-                  <div className="mt-1.5 flex items-center justify-between text-[10px] text-[#64748B] font-mono">
+                  <div className="mt-1.5 flex items-center justify-between text-[10px] text-[#8D8574] font-mono">
                     <span className="truncate max-w-[140px]">{alert.sector}</span>
                     <span>{alert.state}</span>
                   </div>
@@ -346,22 +383,22 @@ export default function Dashboard() {
           </div>
 
           {/* State Performance Leaderboard */}
-          <div className="intel-card p-4 sm:p-5 rounded-xl">
-            <h2 className="text-sm font-bold text-[#0F172A] mb-3">State Risk Leaderboard</h2>
+          <div className="glass-card p-5 rounded-2xl space-y-4">
+            <h2 className="font-serif text-base font-bold text-[#1B1C1A]">State Risk Leaderboard</h2>
             <div className="space-y-3">
               <div>
-                <span className="text-[11px] font-bold text-rose-700 uppercase tracking-wider block mb-1.5">
+                <span className="text-[10px] font-bold text-[#C25E3E] uppercase tracking-wider block mb-1.5">
                   Critical Intervention Needed
                 </span>
                 <div className="space-y-1.5">
                   {(stateStats?.worst_performing || []).slice(0, 3).map((st, i) => (
-                    <div key={st.state} className="flex items-center justify-between p-2 rounded bg-rose-50/50 border border-rose-100 text-xs">
-                      <span className="font-semibold text-slate-900 truncate">
-                        <span className="text-[#64748B] font-mono mr-1">#{i + 1}</span> {st.state}
+                    <div key={st.state} className="flex items-center justify-between p-2.5 rounded-xl bg-[rgba(194,94,62,0.06)] border border-[rgba(194,94,62,0.18)] text-xs">
+                      <span className="font-semibold text-[#1B1C1A] truncate">
+                        <span className="text-[#8D8574] font-mono mr-1">#{i + 1}</span> {st.state}
                       </span>
                       <div className="flex items-center gap-2 font-mono shrink-0 ml-2">
-                        <span className="text-[#64748B] hidden sm:inline">{st.project_count} assets</span>
-                        <span className="text-rose-600 font-bold">{st.avg_risk_score} Score</span>
+                        <span className="text-[#8D8574] hidden sm:inline">{st.project_count} assets</span>
+                        <span className="text-[#C25E3E] font-bold">{st.avg_risk_score} Score</span>
                       </div>
                     </div>
                   ))}
@@ -369,18 +406,18 @@ export default function Dashboard() {
               </div>
 
               <div>
-                <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider block mb-1.5">
+                <span className="text-[10px] font-bold text-[#2D3A30] uppercase tracking-wider block mb-1.5">
                   Top Performing States
                 </span>
                 <div className="space-y-1.5">
                   {(stateStats?.best_performing || []).slice(0, 3).map((st, i) => (
-                    <div key={st.state} className="flex items-center justify-between p-2 rounded bg-emerald-50/50 border border-emerald-100 text-xs">
-                      <span className="font-semibold text-slate-900 truncate">
-                        <span className="text-[#64748B] font-mono mr-1">#{i + 1}</span> {st.state}
+                    <div key={st.state} className="flex items-center justify-between p-2.5 rounded-xl bg-[rgba(74,93,78,0.06)] border border-[rgba(74,93,78,0.18)] text-xs">
+                      <span className="font-semibold text-[#1B1C1A] truncate">
+                        <span className="text-[#8D8574] font-mono mr-1">#{i + 1}</span> {st.state}
                       </span>
                       <div className="flex items-center gap-2 font-mono shrink-0 ml-2">
-                        <span className="text-[#64748B] hidden sm:inline">{st.project_count} assets</span>
-                        <span className="text-emerald-700 font-bold">{st.avg_risk_score} Score</span>
+                        <span className="text-[#8D8574] hidden sm:inline">{st.project_count} assets</span>
+                        <span className="text-[#2D3A30] font-bold">{st.avg_risk_score} Score</span>
                       </div>
                     </div>
                   ))}
@@ -392,24 +429,24 @@ export default function Dashboard() {
       </div>
 
       {/* SECTION 3 — FILTERABLE PROJECTS TABLE */}
-      <div className="intel-card rounded-xl p-4 sm:p-6 space-y-4">
+      <div className="glass-card rounded-2xl p-5 sm:p-7 space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div>
-            <h2 className="text-sm sm:text-base font-bold text-[#0F172A]">Monitored Projects Catalog</h2>
-            <p className="text-xs text-[#64748B]">Total {projectsData.total} infrastructure packages registered</p>
+            <h2 className="font-serif text-base sm:text-lg font-bold text-[#1B1C1A]">Monitored Projects Catalog</h2>
+            <p className="text-xs text-[#8D8574]">Total {projectsData.total} infrastructure packages registered under CUF surveillance</p>
           </div>
 
-          {/* Filter Controls */}
+          {/* Filter Controls with Pill Geometries */}
           <div className="flex flex-wrap items-center gap-2">
             {/* Search */}
             <div className="relative flex-1 sm:flex-none">
-              <Search size={14} className="absolute left-3 top-2.5 text-[#64748B]" />
+              <Search size={14} className="absolute left-3.5 top-2.5 text-[#8D8574]" />
               <input
                 type="text"
                 placeholder="Search project, state..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-52 bg-white border border-[#CBD5E1] text-xs text-[#0F172A] pl-8 pr-3 py-2 rounded-lg focus:outline-none focus:border-indigo-500 shadow-2xs"
+                className="w-full sm:w-56 bg-[#FAF9F5] border border-[rgba(61,58,52,0.14)] text-xs text-[#1B1C1A] pl-9 pr-3.5 py-2 rounded-full focus:outline-none focus:border-[#1E1E1E] transition-colors"
               />
             </div>
 
@@ -417,7 +454,7 @@ export default function Dashboard() {
             <select
               value={sectorFilter}
               onChange={(e) => setSectorFilter(e.target.value)}
-              className="bg-white border border-[#CBD5E1] text-xs text-[#334155] px-2.5 py-2 rounded-lg focus:outline-none focus:border-indigo-500 shadow-2xs font-medium max-w-[160px] truncate"
+              className="bg-[#FAF9F5] border border-[rgba(61,58,52,0.14)] text-xs text-[#3D3A34] px-3.5 py-2 rounded-full focus:outline-none focus:border-[#1E1E1E] font-medium max-w-[170px] truncate transition-colors"
             >
               {allSectors.map(sec => (
                 <option key={sec} value={sec}>{sec}</option>
@@ -425,13 +462,13 @@ export default function Dashboard() {
             </select>
 
             {/* Risk Pills */}
-            <div className="flex rounded-lg bg-slate-100 border border-[#CBD5E1] p-0.5">
+            <div className="flex rounded-full bg-[#EFECE6] border border-[rgba(61,58,52,0.1)] p-0.5">
               {['All', 'High', 'Medium', 'Low'].map(r => (
                 <button
                   key={r}
                   onClick={() => setRiskFilter(r)}
-                  className={`px-2 py-1 text-xs font-mono rounded transition-colors ${
-                    riskFilter === r ? 'bg-white text-indigo-700 font-bold shadow-2xs' : 'text-[#64748B]'
+                  className={`px-3 py-1 text-xs font-mono rounded-full transition-all ${
+                    riskFilter === r ? 'bg-[#1E1E1E] text-[#FAF9F5] font-bold shadow-xs' : 'text-[#655E4E] hover:text-[#1B1C1A]'
                   }`}
                 >
                   {r}
@@ -442,56 +479,56 @@ export default function Dashboard() {
         </div>
 
         {/* Responsive Table Content */}
-        <div className="overflow-x-auto -mx-4 sm:mx-0">
-          <table className="w-full text-left text-xs min-w-[620px] sm:min-w-full">
-            <thead className="bg-slate-50 text-[#475569] uppercase font-semibold border-b border-[#E2E8F0]">
+        <div className="overflow-x-auto -mx-5 sm:mx-0">
+          <table className="w-full text-left text-xs min-w-[640px] sm:min-w-full">
+            <thead className="bg-[#FAF9F5]/80 text-[#655E4E] uppercase font-semibold border-b border-[rgba(61,58,52,0.08)]">
               <tr>
-                <th className="py-2.5 px-3 sm:px-4">Project ID & Title</th>
-                <th className="py-2.5 px-3 sm:px-4">Sector & State</th>
-                <th className="py-2.5 px-3 sm:px-4">Sanctioned</th>
-                <th className="py-2.5 px-3 sm:px-4">Risk Index</th>
-                <th className="py-2.5 px-3 sm:px-4">Overrun Probs</th>
-                <th className="py-2.5 px-3 sm:px-4 text-right">Action</th>
+                <th className="py-3 px-4">Project ID & Title</th>
+                <th className="py-3 px-4">Sector & State</th>
+                <th className="py-3 px-4">Sanctioned</th>
+                <th className="py-3 px-4">Risk Index</th>
+                <th className="py-3 px-4">Overrun Probs</th>
+                <th className="py-3 px-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 font-mono">
+            <tbody className="divide-y divide-[rgba(61,58,52,0.06)] font-mono">
               {(projectsData.projects || []).map((proj) => (
-                <tr key={proj.project_id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="py-3 px-3 sm:px-4 font-sans max-w-[200px]">
-                    <div className="font-bold text-slate-900 truncate">{proj.project_name}</div>
-                    <div className="text-[10px] font-mono text-indigo-600 mt-0.5 font-medium">{proj.project_id}</div>
+                <tr key={proj.project_id} className="hover:bg-[rgba(239,236,230,0.5)] transition-colors">
+                  <td className="py-3.5 px-4 font-sans max-w-[220px]">
+                    <div className="font-bold text-[#1B1C1A] truncate">{proj.project_name}</div>
+                    <div className="text-[10px] font-mono text-[#8D8574] mt-0.5 font-medium">{proj.project_id}</div>
                   </td>
-                  <td className="py-3 px-3 sm:px-4 font-sans">
-                    <div className="text-slate-800 font-medium truncate max-w-[130px]">{proj.sector}</div>
-                    <div className="text-[10px] text-[#64748B]">{proj.state}</div>
+                  <td className="py-3.5 px-4 font-sans">
+                    <div className="text-[#1B1C1A] font-medium truncate max-w-[130px]">{proj.sector}</div>
+                    <div className="text-[10px] text-[#8D8574]">{proj.state}</div>
                   </td>
-                  <td className="py-3 px-3 sm:px-4 whitespace-nowrap">
-                    <div className="text-slate-900 font-bold">Rs. {proj.sanctioned_cost} Cr</div>
-                    <div className="text-[10px] text-[#64748B]">Exp: {proj.actual_expenditure} Cr</div>
+                  <td className="py-3.5 px-4 whitespace-nowrap">
+                    <div className="text-[#1B1C1A] font-bold tabular-nums">Rs. {proj.sanctioned_cost} Cr</div>
+                    <div className="text-[10px] text-[#8D8574] tabular-nums">Exp: {proj.actual_expenditure} Cr</div>
                   </td>
-                  <td className="py-3 px-3 sm:px-4 whitespace-nowrap">
-                    <div className="inline-flex items-center justify-center px-2 py-0.5 rounded-full font-bold text-xs" style={{
-                      backgroundColor: proj.risk_score >= 65 ? '#FFE4E6' : proj.risk_score >= 35 ? '#FEF3C7' : '#D1FAE5',
-                      color: proj.risk_score >= 65 ? '#BE123C' : proj.risk_score >= 35 ? '#B45309' : '#047857',
-                      border: `1px solid ${proj.risk_score >= 65 ? '#FECDD3' : proj.risk_score >= 35 ? '#FDE68A' : '#A7F3D0'}`
-                    }}>
+                  <td className="py-3.5 px-4 whitespace-nowrap">
+                    <div className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full font-bold text-xs ${
+                      proj.risk_score >= 65 ? 'badge-sienna' :
+                      proj.risk_score >= 35 ? 'badge-amber' :
+                      'badge-nominal'
+                    }`}>
                       {proj.risk_score}
                     </div>
                   </td>
-                  <td className="py-3 px-3 sm:px-4 whitespace-nowrap">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     <div className="space-y-1">
                       <div className="flex items-center gap-1.5 text-[10px]">
-                        <span className="text-amber-600 font-semibold">Cost: {Math.round((proj.cost_overrun_probability || 0.15) * 100)}%</span>
+                        <span className="text-[#D97706] font-semibold tabular-nums">Cost: {Math.round((proj.cost_overrun_probability || 0.15) * 100)}%</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-[10px]">
-                        <span className="text-indigo-600 font-semibold">Time: {Math.round((proj.time_overrun_probability || 0.2) * 100)}%</span>
+                        <span className="text-[#2C3E50] font-semibold tabular-nums">Time: {Math.round((proj.time_overrun_probability || 0.2) * 100)}%</span>
                       </div>
                     </div>
                   </td>
-                  <td className="py-3 px-3 sm:px-4 text-right whitespace-nowrap">
+                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
                     <Link
                       to={`/projects/${proj.project_id}`}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-600 hover:text-white transition-colors text-xs font-sans font-semibold"
+                      className="btn-sovereign-secondary inline-flex items-center gap-1.5 px-3 py-1 text-xs font-sans font-semibold transition-all"
                     >
                       <span>Inspect</span>
                       <ExternalLink size={11} />

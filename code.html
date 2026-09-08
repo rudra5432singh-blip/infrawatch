@@ -1,0 +1,1217 @@
+<!DOCTYPE html><html lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}
+.glass-panel {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 10px 36px -4px rgba(32, 28, 22, 0.05), 0 1px 2px 0 rgba(255, 255, 255, 0.8) inset;
+}
+.glass-panel-dark {
+  background: rgba(20, 20, 22, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.35), 0 1px 1px 0 rgba(255, 255, 255, 0.15) inset;
+}
+.glass-pill {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+@keyframes pulse-ring {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  50% { transform: scale(1.6); opacity: 0.3; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+.pulse-marker-ring {
+  animation: pulse-ring 2.2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  transform-origin: center;
+}
+</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"surface-tint":"#5f5e5e","on-surface-variant":"#444748","surface-dim":"#dbdad6","surface-variant":"#e3e2df","outline":"#747878","surface-container-lowest":"#ffffff","secondary-container":"#e9dfcb","primary-fixed-dim":"#c8c6c5","on-secondary-container":"#696252","on-secondary-fixed-variant":"#4c4638","surface":"#faf9f5","on-primary-fixed":"#1b1b1c","background":"#faf9f5","on-secondary-fixed":"#201b0f","primary-container":"#1e1e1e","secondary-fixed":"#ece1ce","primary":"#040505","on-primary-container":"#878585","on-background":"#1b1c1a","on-tertiary":"#ffffff","surface-container":"#efeeea","tertiary-fixed-dim":"#ffb77d","on-error-container":"#93000a","surface-container-low":"#f5f4f0","outline-variant":"#c4c7c7","on-secondary":"#ffffff","on-primary-fixed-variant":"#474746","surface-bright":"#faf9f5","surface-container-high":"#e9e8e4","tertiary":"#0b0300","on-primary":"#ffffff","on-tertiary-fixed-variant":"#6e3900","on-error":"#ffffff","on-surface":"#1b1c1a","inverse-surface":"#30312e","error-container":"#ffdad6","secondary-fixed-dim":"#cfc5b2","surface-container-highest":"#e3e2df","on-tertiary-container":"#ca6e00","inverse-primary":"#c8c6c5","secondary":"#655e4e","tertiary-fixed":"#ffdcc3","error":"#ba1a1a","primary-fixed":"#e5e2e1","inverse-on-surface":"#f2f1ed","on-tertiary-fixed":"#2f1500","tertiary-container":"#321700"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-lg":"1.5rem","gutter-tablet":"1.5rem","margin-page":"2.5rem","space-sm":"0.75rem","space-2xl":"3rem","space-xl":"2rem","gutter-mobile":"1rem","space-md":"1rem","space-2xs":"0.25rem","space-3xl":"4rem","space-3xs":"0.125rem","space-xs":"0.5rem","gutter-desktop":"2rem"},"fontFamily":{"title-md":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"display-lg-mobile":["Newsreader"],"body-md":["Plus Jakarta Sans"],"title-lg":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"headline-sm":["Newsreader"],"metric-display":["Plus Jakarta Sans"],"headline-lg-mobile":["Newsreader"],"headline-md":["Newsreader"],"display-lg":["Newsreader"],"body-sm":["Plus Jakarta Sans"],"headline-lg":["Newsreader"]},"fontSize":{"title-md":["15px",{"lineHeight":"20px","letterSpacing":"-0.005em","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"display-lg-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.01em","fontWeight":"400"}],"body-md":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"title-lg":["18px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"label-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"700"}],"body-lg":["16px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"400"}],"headline-sm":["22px",{"lineHeight":"28px","letterSpacing":"0em","fontWeight":"500"}],"metric-display":["32px",{"lineHeight":"38px","letterSpacing":"-0.03em","fontWeight":"700"}],"headline-lg-mobile":["26px",{"lineHeight":"34px","letterSpacing":"-0.01em","fontWeight":"400"}],"headline-md":["28px",{"lineHeight":"36px","letterSpacing":"-0.01em","fontWeight":"400"}],"display-lg":["48px",{"lineHeight":"56px","letterSpacing":"-0.02em","fontWeight":"400"}],"body-sm":["12px",{"lineHeight":"16px","letterSpacing":"0.01em","fontWeight":"400"}],"headline-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.015em","fontWeight":"400"}]}}}}</script></head><body class="bg-[#faf9f5] font-body-md text-on-surface antialiased selection:bg-amber-200 selection:text-primary"><header class="fixed top-0 left-0 right-0 h-20 bg-surface/80 backdrop-blur-xl z-50 border-b border-white/60 shadow-[0_4px_24px_rgba(0,0,0,0.03)]"><div class="h-20 w-full px-gutter-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md min-w-[340px]"><a class="flex items-center transition hover:opacity-95" href="#"><img alt="InfraWatch Sovereign Observatory" class="h-10 w-auto object-contain drop-shadow-sm rounded-md" src="https://lh3.googleusercontent.com/aida/AEtjO1VyYt0oG_HBTBrjo5CEkU60bNaYDo_xVRN_Oa-L9NwI65UFMfhsxrp8LnRMvFIUBBbJXWV3Yh01ZeW4Nd1ooTHLgtNkWkDQHM4helBjmPii3meJVhq--3qXck5kT1vh5kTz9XdLzH_y7GWkpryNxRi2wnyPdfonU-IJ5So6nKmwVTJ-PBslBGEXYTBWAUY-GKpfO4n151mefzymEd8AgSsVyZjdcl2WNja4mIvXBsU_pZ5a5n6ye0A1LRI"></a></div><div class="hidden xl:flex items-center flex-1 max-w-2xl px-space-md"><div class="w-full flex items-center bg-surface-container-low/80 backdrop-blur-md border border-white/70 rounded-full px-space-md py-1.5 shadow-[0_2px_12px_rgba(0,0,0,0.02)]"><span class="material-symbols-outlined text-on-surface-variant text-[18px] mr-space-xs">search</span><span class="font-body-sm text-body-sm text-on-surface-variant flex-1 truncate">Search 1,842 projects, ministries, EPC contractors or risk signals...</span><div class="flex items-center gap-space-3xs ml-space-xs"><span class="px-space-xs py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container-highest/90 text-on-surface shadow-xs">All</span><span class="px-space-xs py-0.5 rounded-full text-label-sm font-label-sm bg-transparent text-on-surface-variant hover:text-on-surface cursor-pointer">Highways</span><span class="px-space-xs py-0.5 rounded-full text-label-sm font-label-sm bg-transparent text-on-surface-variant hover:text-on-surface cursor-pointer">Railways</span><span class="px-space-xs py-0.5 rounded-full text-label-sm font-label-sm bg-transparent text-on-surface-variant hover:text-on-surface cursor-pointer">Energy</span></div><kbd class="hidden 2xl:inline-block ml-space-xs px-space-xs py-0.5 font-label-sm text-label-sm text-on-surface-variant bg-surface-container/70 rounded border border-white/60">⌘K</kbd></div></div><div class="flex items-center gap-space-sm"><div class="flex items-center gap-space-2xs px-space-sm py-1.5 rounded-full bg-surface-container/80 backdrop-blur-md border border-white/50"><span class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider font-medium">FY 2024-25 Q3</span></div><button class="relative p-2 rounded-full hover:bg-surface-container/80 transition-colors text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error ring-2 ring-surface"></span></button><button class="hidden sm:flex items-center gap-space-xs px-space-md py-2 rounded-full bg-primary text-on-primary hover:bg-primary-container transition-all shadow-[0_4px_16px_rgba(0,0,0,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.16)]"><span class="material-symbols-outlined text-[18px]">download</span><span class="font-label-md text-label-md font-medium">Export Dossier</span></button><div class="flex items-center gap-space-sm pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-white/80 shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0k8TyODMvL15N6jfdmmoTPaJKKhnyqROFMBe-bIaZuN6ogna_rspM0EYC7xM_bZ3BZHYb2OoU2uzZ4huBNPIRuR1uCarfv9htt-m0Dcl3AJ6J_Cv-Q9lhaohf3pT9q9jFYYLSVJtd5cjaryVPInd7gf1KTBEuO0WH3B5U7w66cTDu6zbTJNShk27sPAt2rrt0BOok3JJI2570gxneGylMhSD1I8SEGUveUdUvCCyY2FqgZogEkbOF"><div class="hidden 2xl:flex flex-col text-right"><span class="font-label-md text-label-md text-on-surface leading-tight font-semibold">Shri R. V. Ramanathan, IAS</span><span class="font-label-sm text-label-sm text-on-surface-variant">Principal Secy, Monitoring</span></div></div></div></div></header><aside class="fixed left-0 top-20 bottom-0 w-72 bg-surface-container-low/75 backdrop-blur-xl z-40 flex flex-col justify-between py-space-lg border-r border-white/60 shadow-[1px_0_16px_rgba(0,0,0,0.02)]"><div class="flex flex-col px-space-sm"><div class="px-space-md mb-space-sm"><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest font-semibold">Mission Core</span></div><nav class="flex flex-col gap-1" data-active-classes="bg-primary-container text-on-primary-container font-bold rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)]"><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-2.5 transition-all group bg-primary-container text-on-primary-container font-bold rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-white/10" data-path="executive-dashboard" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-body-md text-body-md">Executive Dashboard</span></a><a class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-all group" data-path="project-intelligence" href="#"><span class="material-symbols-outlined text-[20px]">account_tree</span><span class="font-body-md text-body-md">Project Intelligence</span></a><a class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-all group" data-path="ai-risk-and-shap-analysis" href="#"><span class="material-symbols-outlined text-[20px]">analytics</span><span class="font-body-md text-body-md">AI Risk &amp; SHAP Analysis</span></a><a class="flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-all group" data-path="early-warning-center" href="#"><div><span class="material-symbols-outlined text-[20px] mr-space-sm align-middle">crisis_alert</span><span class="font-body-md text-body-md align-middle">Early Warning Center</span></div><span class="px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container">3 Critical</span></a><a class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-all group" data-path="interventions-and-decision-support" href="#"><span class="material-symbols-outlined text-[20px]">gavel</span><span class="font-body-md text-body-md">Interventions Support</span></a><a class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-all group" data-path="sector-benchmarking" href="#"><span class="material-symbols-outlined text-[20px]">stacked_bar_chart</span><span class="font-body-md text-body-md">Sector Benchmarking</span></a><a class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-all group" data-path="predictive-model-lab" href="#"><span class="material-symbols-outlined text-[20px]">biotech</span><span class="font-body-md text-body-md">Predictive Model Lab</span></a><a class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-all group" data-path="cuf-and-data-ingestion" href="#"><span class="material-symbols-outlined text-[20px]">dataset</span><span class="font-body-md text-body-md">CUF &amp; Data Ingestion</span></a><a class="flex items-center gap-space-sm px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-white/60 hover:text-on-surface transition-all group" data-path="ai-intelligence-copilot" href="#"><span class="material-symbols-outlined text-[20px]">psychology</span><span class="font-body-md text-body-md">AI Intelligence Copilot</span></a></nav></div><div class="px-space-md"><div class="p-space-md rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 flex flex-col gap-space-2xs shadow-[0_8px_20px_rgba(0,0,0,0.03)]"><div class="flex items-center justify-between"><span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">OCMS Gateway</span><span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span></div><span class="font-body-sm text-body-sm text-on-surface font-semibold">1,842 Monitored Assets</span><p class="font-body-sm text-body-sm text-on-surface-variant">Next telemetry sync scheduled at 18:00 IST</p></div></div></aside><div class="pl-72"><main class="relative pt-20 w-full min-h-screen bg-background"><div class="flex flex-col w-full">
+<!-- Top Command Ribbon & Editorial Title -->
+<section class="px-gutter-desktop py-space-xl flex flex-col gap-space-lg">
+<div class="flex flex-col xl:flex-row xl:items-end justify-between gap-space-md">
+<div class="flex flex-col max-w-4xl">
+<div class="flex items-center gap-space-xs mb-space-xs">
+<span class="px-space-xs py-0.5 rounded-full bg-secondary-container/90 text-on-secondary-container font-label-sm text-label-sm uppercase tracking-wider backdrop-blur-sm border border-secondary-container">
+            Cabinet Secretariat // MoSPI Analytical Node
+          </span>
+<span class="inline-block w-1 h-1 rounded-full bg-outline"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Telemetry Live (58s ago)</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">
+          National Infrastructure Predictive Risk Observatory
+        </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-space-xs leading-relaxed max-w-3xl">
+          Continuous multi-modal AI surveillance across <span class="font-semibold text-on-surface">1,842 Central Sector Projects</span> (≥₹150 Cr). Early warning drift engine anticipating capital expenditure escalations, schedule decay curves, and interstate right-of-way logjams.
+        </p>
+</div>
+<!-- Action Island & Filter Controls with Glass Frosted Styling -->
+<div class="flex flex-wrap items-center gap-space-xs bg-white/75 backdrop-blur-md border border-white/80 p-1.5 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.04)] self-start xl:self-end">
+<div class="relative">
+<button class="flex items-center gap-space-xs px-space-sm py-1.5 rounded-full bg-surface/90 hover:bg-surface-container transition text-on-surface font-label-md text-label-md border border-white/50" id="minOutlayBtn">
+<span class="text-on-surface-variant font-normal">Outlay:</span>
+<span class="">≥ ₹150 Cr – ₹10,000+ Cr</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">keyboard_arrow_down</span>
+</button>
+</div>
+<div class="relative">
+<button class="flex items-center gap-space-xs px-space-sm py-1.5 rounded-full bg-surface/90 hover:bg-surface-container transition text-on-surface font-label-md text-label-md border border-white/50">
+<span class="text-on-surface-variant font-normal">Horizon:</span>
+<span class="">Q3/Q4 FY25</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">keyboard_arrow_down</span>
+</button>
+</div>
+<button class="flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-highest/80 hover:bg-surface-dim text-on-surface transition font-label-md text-label-md group border border-white/40" id="runInferenceBtn">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:rotate-180 transition-transform duration-500">sync</span>
+<span class="">Run Fresh Inference</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-primary text-on-primary hover:bg-primary-container transition shadow-sm font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+<span class="">Cabinet Briefing PDF</span>
+</button>
+</div>
+</div>
+</section>
+<!-- High-Impact KPI Row (5 Architectural Glassmorphic Cards) -->
+<section class="px-gutter-desktop pb-space-xl">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-space-md">
+<!-- Card 1: Obsidian Monolith (Risk Gauge) -->
+<div class="relative glass-panel-dark text-on-primary rounded-2xl p-space-md flex flex-col justify-between overflow-hidden">
+<div class="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-gradient-to-br from-amber-500/20 to-transparent pointer-events-none blur-xl"></div>
+<div class="flex items-start justify-between gap-space-xs relative z-10">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-primary-container font-semibold">Primary Sovereign Index</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-white/10 text-tertiary-fixed border border-white/10 backdrop-blur-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+            Elevated
+          </span>
+</div>
+<div class="my-space-md flex items-end justify-between relative z-10">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-1">
+<span class="font-metric-display text-metric-display text-on-primary tracking-tighter">64.8</span>
+<span class="font-title-md text-title-md text-on-primary-container">/ 100</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary-fixed-dim mt-0.5 font-medium">+4.2 pts QoQ acceleration</span>
+</div>
+<!-- Mini Arc Gauge SVG -->
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-16 h-16 -rotate-90" viewBox="0 0 48 48">
+<circle cx="24" cy="24" fill="transparent" r="18" stroke="rgba(255,255,255,0.12)" stroke-dasharray="113.1" stroke-dashoffset="28" stroke-width="3.5"></circle>
+<circle cx="24" cy="24" fill="transparent" r="18" stroke="#ffb77d" stroke-dasharray="113.1" stroke-dashoffset="52" stroke-linecap="round" stroke-width="3.5"></circle>
+</svg>
+<span class="absolute material-symbols-outlined text-[16px] text-tertiary-fixed-dim">analytics</span>
+</div>
+</div>
+<div class="pt-space-xs flex items-center justify-between font-body-sm text-body-sm text-on-primary-container border-t border-white/10 relative z-10">
+<span class="">412 packages in high-risk bracket</span>
+<span class="text-on-primary font-semibold">22.3%</span>
+</div>
+</div>
+<!-- Card 2: Monitored Capital Outlay -->
+<div class="glass-panel rounded-2xl p-space-md flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition group">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Monitored Portfolio</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[18px] group-hover:text-primary transition">account_balance</span>
+</div>
+<div class="my-space-sm flex flex-col">
+<div class="font-metric-display text-metric-display text-primary tracking-tight">1,842</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Active packages across 16 Ministries</span>
+</div>
+<div class="pt-space-xs flex flex-col gap-1 border-t border-black/5">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Total Sanctioned Outlay</span>
+<span class="font-semibold text-on-surface">₹27.42 Lakh Cr</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Engaged EPC Contractors</span>
+<span class="font-semibold text-on-surface">348 Concessionaires</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Predicted Cost Overruns -->
+<div class="glass-panel rounded-2xl p-space-md flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Cost Overrun Drift</span>
+<span class="px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-error-container/80 text-on-error-container font-semibold backdrop-blur-sm">+17.8% Mean</span>
+</div>
+<div class="my-space-sm flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-metric-display text-metric-display text-error tracking-tight">₹4.86L</span>
+<span class="font-title-md text-title-md text-on-surface-variant">Cr</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">428 Projects flagged with capital leakage</span>
+</div>
+<div class="w-full bg-surface-container/70 rounded-full h-1.5 overflow-hidden flex">
+<div class="bg-error h-full rounded-full" style="width: 23.2%"></div>
+</div>
+<div class="pt-space-2xs flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Sanctioned Drift Exposure</span>
+<span class="font-semibold text-on-surface">23.2% of Projects</span>
+</div>
+</div>
+<!-- Card 4: Schedule Delays -->
+<div class="glass-panel rounded-2xl p-space-md flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Predicted Schedule Drift</span>
+<span class="px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-container/80 text-on-secondary-container font-semibold backdrop-blur-sm">33.3% Portfolio</span>
+</div>
+<div class="my-space-sm flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-metric-display text-metric-display text-primary tracking-tight">19.4</span>
+<span class="font-title-md text-title-md text-on-surface-variant">Months</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Mean anticipated milestone lag</span>
+</div>
+<div class="pt-space-xs flex items-center justify-between font-body-sm text-body-sm border-t border-black/5">
+<span class="text-on-surface-variant">Critical Path Blocked</span>
+<span class="font-semibold text-error">182 Major Nodes</span>
+</div>
+</div>
+<!-- Card 5: Immediate Sovereign Intervention -->
+<div class="glass-panel rounded-2xl p-space-md flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Intervention Mandate</span>
+<span class="flex items-center gap-1 font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-error/10 text-error font-bold border border-error/20">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
+            Action ≤ 14 Days
+          </span>
+</div>
+<div class="my-space-sm flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-metric-display text-metric-display text-on-surface tracking-tight">89</span>
+<span class="font-title-md text-title-md text-on-surface-variant">Flash Hazards</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">High-probability stall (&gt;85% SHAP index)</span>
+</div>
+<div class="pt-space-xs flex items-center justify-between border-t border-black/5">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cabinet Review Stack</span>
+<button class="font-label-sm text-label-sm text-primary font-semibold flex items-center gap-0.5 hover:underline">
+            View Stack <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Dedicated Interactive National Infrastructure GIS Map Section -->
+<section class="px-gutter-desktop pb-space-xl">
+<div class="glass-panel rounded-3xl p-space-lg relative overflow-hidden">
+<!-- Ambient Backdrop Gradient -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-amber-200/25 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-24 -left-24 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Header bar of GIS Observatory -->
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-md border-b border-black/5">
+<div>
+<div class="flex items-center gap-space-xs mb-1">
+<span class="px-space-xs py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+            ISRO Cartosat-3A &amp; PM GatiShakti GIS Link
+          </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Spatial Latency: 1.4s</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-primary">
+          Live Geospatial Project Corridor Surveillance &amp; Active Alignment Tracking
+        </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+          Real-time linear infrastructure vector overlays across National Corridors with multi-spectral earth observation telemetry.
+        </p>
+</div>
+<!-- Layer Toggles & Control Ribbon -->
+<div class="flex flex-wrap items-center gap-2">
+<div class="glass-pill px-3 py-1.5 rounded-full flex items-center gap-1.5 text-label-sm text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary">satellite_alt</span>
+<span class="font-medium">18.2m Cartosat Res</span>
+</div>
+<div class="flex items-center bg-surface-container/70 backdrop-blur-md p-1 rounded-full border border-white/60">
+<button class="px-3 py-1 rounded-full text-label-sm font-label-sm bg-primary text-on-primary shadow-xs" id="layerAll">All Networks</button>
+<button class="px-3 py-1 rounded-full text-label-sm font-label-sm text-on-surface-variant hover:text-on-surface transition" id="layerRail">HSR &amp; DFC</button>
+<button class="px-3 py-1 rounded-full text-label-sm font-label-sm text-on-surface-variant hover:text-on-surface transition" id="layerRoads">Expressways</button>
+<button class="px-3 py-1 rounded-full text-label-sm font-label-sm text-on-surface-variant hover:text-on-surface transition" id="layerPorts">Ports &amp; Energy</button>
+</div>
+<div class="flex items-center gap-1 bg-surface-container/70 backdrop-blur-md p-1 rounded-full border border-white/60">
+<button class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white text-on-surface-variant hover:text-primary transition" title="Zoom In"><span class="material-symbols-outlined text-[16px]">add</span></button>
+<button class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white text-on-surface-variant hover:text-primary transition" title="Zoom Out"><span class="material-symbols-outlined text-[16px]">remove</span></button>
+<button class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white text-on-surface-variant hover:text-primary transition" title="Center Map"><span class="material-symbols-outlined text-[16px]">filter_center_focus</span></button>
+</div>
+</div>
+</div>
+<!-- GIS Map Canvas & Interactive Callout Grid -->
+<div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-space-lg pt-space-md items-stretch">
+<!-- Interactive SVG Vector Geospatial Map (8 Cols) -->
+<div class="lg:col-span-8 bg-[#18191b] rounded-2xl p-space-md relative overflow-hidden border border-white/10 shadow-[inset_0_2px_12px_rgba(0,0,0,0.5)] min-h-[460px] flex flex-col justify-between">
+<!-- Coordinate HUD Overlays -->
+<div class="absolute top-4 left-4 z-20 flex items-center gap-2">
+<div class="glass-pill !bg-black/60 !border-white/15 text-white px-2.5 py-1 rounded-md text-[11px] font-mono flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            LAT: 20°35' N | LON: 78°57' E
+          </div>
+<div class="glass-pill !bg-black/60 !border-white/15 text-white/70 px-2 py-1 rounded-md text-[11px] font-mono hidden sm:inline-block">
+            GEODESIC WGS84
+          </div>
+</div>
+<!-- Legend Overlay (Bottom Left) -->
+<div class="absolute bottom-4 left-4 z-20 glass-pill !bg-black/75 !border-white/15 px-3 py-2 rounded-xl text-white flex flex-col gap-1 text-[11px]">
+<div class="font-semibold text-white/90 text-label-sm uppercase tracking-wider mb-0.5">Alignment Risk Status</div>
+<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]"></span> Critical Overrun Risk (SHAP &gt; 80)</div>
+<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b]"></span> Elevated ROW / Clearance Drift</div>
+<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span> On Track Milestone Velocity</div>
+<div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-[0_0_8px_#60a5fa]"></span> Coastal &amp; Maritime Hubs</div>
+</div>
+<!-- Stylized Vector Map of India Infrastructure Corridors -->
+<div class="relative w-full h-[410px] flex items-center justify-center">
+<svg class="w-full h-full max-h-[420px]" fill="none" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg">
+<!-- Ambient Spatial Grid Background -->
+<defs>
+<pattern height="40" id="gisGrid" patternUnits="userSpaceOnUse" width="40">
+<path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.035)" stroke-width="1"></path>
+<circle cx="40" cy="40" fill="rgba(212,175,55,0.2)" r="1"></circle>
+</pattern>
+<!-- Glowing Gradients -->
+<linearGradient id="hsrGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#ef4444"></stop>
+<stop offset="100%" stop-color="#f59e0b"></stop>
+</linearGradient>
+<linearGradient id="dfcGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#3b82f6"></stop>
+<stop offset="100%" stop-color="#10b981"></stop>
+</linearGradient>
+</defs>
+<rect fill="url(#gisGrid)" height="520" width="800"></rect>
+<!-- India Stylized Vector Landmass Outline -->
+<path d="M370 42 C410 40 435 68 450 95 C465 118 510 135 550 145 C600 152 640 180 660 215 C670 230 655 250 635 255 C615 260 590 245 570 248 C550 252 525 285 520 310 C510 350 490 390 460 430 C440 458 420 482 410 498 C402 485 390 440 370 400 C345 350 320 320 300 290 C280 260 270 230 290 205 C310 180 300 155 315 130 C330 100 340 70 370 42 Z" fill="#212226" opacity="0.85" stroke="#38393e" stroke-width="1.5"></path>
+<!-- Coastline Ambient Glow Buffer -->
+<path d="M370 42 C410 40 435 68 450 95 C465 118 510 135 550 145 C600 152 640 180 660 215 C670 230 655 250 635 255 C615 260 590 245 570 248 C550 252 525 285 520 310 C510 350 490 390 460 430 C440 458 420 482 410 498 C402 485 390 440 370 400 C345 350 320 320 300 290 C280 260 270 230 290 205 C310 180 300 155 315 130 C330 100 340 70 370 42 Z" fill="none" opacity="0.4" stroke="rgba(212,175,55,0.18)" stroke-width="6"></path>
+<!-- Major Infrastructure Corridor Lines (SVG Vectors) -->
+<!-- Delhi - Mumbai Industrial Corridor / Expressway -->
+<path d="M 405 130 L 375 190 L 340 250 L 330 300" opacity="0.9" stroke="#f59e0b" stroke-dasharray="6 3" stroke-width="3"></path>
+<!-- Mumbai - Ahmedabad High Speed Rail (Red - High Alert) -->
+<path d="M 330 300 L 335 270 L 345 240" stroke="#ef4444" stroke-linecap="round" stroke-width="4"></path>
+<!-- Eastern Dedicated Freight Corridor (Ludhiana -> Dankuni) -->
+<path d="M 380 110 L 430 155 L 485 195 L 535 240" opacity="0.85" stroke="#3b82f6" stroke-width="3"></path>
+<!-- Golden Quadrilateral Southern Leg (Mumbai -> Bengaluru -> Chennai) -->
+<path d="M 330 300 L 370 370 L 410 420 L 450 390" opacity="0.8" stroke="#10b981" stroke-dasharray="4 2" stroke-width="2.5"></path>
+<!-- Chennai -> Kolkata East Coast Corridor -->
+<path d="M 450 390 L 475 330 L 515 280 L 535 240" opacity="0.75" stroke="#10b981" stroke-width="2.5"></path>
+<!-- Northern Mountain Link (USBRL Rail - Chenab) -->
+<path d="M 390 70 L 400 95 L 405 130" stroke="#ef4444" stroke-linecap="round" stroke-width="3.5"></path>
+<!-- Interactive GIS Nodes / Hotspot Markers -->
+<!-- 1. Mumbai-Ahmedabad HSR (Critical Red) -->
+<g class="cursor-pointer group" onclick="selectGisProject('hsr')">
+<circle class="pulse-marker-ring" cx="340" cy="270" fill="rgba(239, 68, 68, 0.25)" r="16"></circle>
+<circle cx="340" cy="270" fill="#ef4444" r="6" stroke="#ffffff" stroke-width="2"></circle>
+<!-- Tag -->
+<rect fill="rgba(0,0,0,0.75)" height="20" rx="4" stroke="#ef4444" stroke-width="0.8" width="95" x="235" y="248"></rect>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="600" x="242" y="262">MAHSR Pkg C-4</text>
+</g>
+<!-- 2. USBRL Chenab Arch (Critical Geotech) -->
+<g class="cursor-pointer group" onclick="selectGisProject('chenab')">
+<circle class="pulse-marker-ring" cx="395" cy="85" fill="rgba(239, 68, 68, 0.25)" r="14"></circle>
+<circle cx="395" cy="85" fill="#ef4444" r="5.5" stroke="#ffffff" stroke-width="1.8"></circle>
+<rect fill="rgba(0,0,0,0.75)" height="20" rx="4" stroke="#ef4444" stroke-width="0.8" width="98" x="410" y="76"></rect>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="600" x="416" y="90">Chenab Arch Link</text>
+</g>
+<!-- 3. Delhi-Mumbai Expressway Pkg 12 (Elevated Amber) -->
+<g class="cursor-pointer group" onclick="selectGisProject('dme')">
+<circle class="pulse-marker-ring" cx="370" cy="210" fill="rgba(245, 158, 11, 0.2)" r="14"></circle>
+<circle cx="370" cy="210" fill="#f59e0b" r="5.5" stroke="#ffffff" stroke-width="1.8"></circle>
+<rect fill="rgba(0,0,0,0.75)" height="20" rx="4" stroke="#f59e0b" stroke-width="0.8" width="102" x="382" y="200"></rect>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="600" x="388" y="214">DME Expressway-12</text>
+</g>
+<!-- 4. Vizhinjam Deepwater Port (Maritime Amber) -->
+<g class="cursor-pointer group" onclick="selectGisProject('vizhinjam')">
+<circle class="pulse-marker-ring" cx="400" cy="485" fill="rgba(96, 165, 250, 0.25)" r="14"></circle>
+<circle cx="400" cy="485" fill="#60a5fa" r="5" stroke="#ffffff" stroke-width="1.8"></circle>
+<rect fill="rgba(0,0,0,0.75)" height="20" rx="4" stroke="#60a5fa" stroke-width="0.8" width="92" x="415" y="474"></rect>
+<text fill="#ffffff" font-family="Plus Jakarta Sans" font-size="9" font-weight="600" x="421" y="488">Vizhinjam Port II</text>
+</g>
+<!-- 5. Khavda Renewable Mega Solar Park (Green On-track) -->
+<g class="cursor-pointer group">
+<circle cx="295" cy="225" fill="#10b981" r="5" stroke="#ffffff" stroke-width="1.8"></circle>
+<text fill="#10b981" font-family="Plus Jakarta Sans" font-size="9" font-weight="600" x="240" y="222">Khavda Solar 30GW</text>
+</g>
+<!-- 6. Eastern DFC Sonnagar Link (Blue Logistics) -->
+<g class="cursor-pointer group">
+<circle cx="505" cy="215" fill="#3b82f6" r="5" stroke="#ffffff" stroke-width="1.8"></circle>
+<text fill="#93c5fd" font-family="Plus Jakarta Sans" font-size="9" font-weight="600" x="516" y="218">EDFC Sonnagar</text>
+</g>
+</svg>
+</div>
+<!-- Map Footer Diagnostics -->
+<div class="relative z-20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-2 border-t border-white/10 text-white/60 text-[11px]">
+<span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 18 Active Geofenced Alignments Polled | Sentinel-2 Radar Refreshed 04:12 UTC</span>
+<span class="font-mono text-tertiary-fixed-dim">Click any corridor node to inspect telemetric telemetry</span>
+</div>
+</div>
+<!-- Active Project Inspection Callout Drawer (4 Cols) -->
+<div class="lg:col-span-4 flex flex-col justify-between glass-panel !bg-white/80 rounded-2xl p-space-md border border-white/90 shadow-sm" id="gisInspectorBox">
+<div>
+<div class="flex items-center justify-between pb-space-xs border-b border-black/5">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-error font-bold" id="gisRiskStatus">Critical Overrun Divergence</span>
+</div>
+<span class="px-space-xs py-0.5 rounded text-[10px] font-mono bg-surface-container font-semibold" id="gisPackageId">NHSRCL-MAH-04</span>
+</div>
+<div class="mt-space-sm">
+<h3 class="font-title-lg text-title-lg text-primary leading-tight font-semibold" id="gisTitle">
+              Mumbai-Ahmedabad High Speed Rail (C4 Pkg)
+            </h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant block mt-0.5" id="gisSubtitle">
+              237 km Elevated Viaduct &amp; Vapi-Surat Alignment
+            </span>
+</div>
+<!-- Micro Metric Grid for Selected Node -->
+<div class="grid grid-cols-2 gap-space-xs my-space-md">
+<div class="p-space-xs rounded-xl bg-surface-container-low/90 border border-white/70">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Forecast Delay</span>
+<span class="font-metric-display text-[18px] text-error font-bold" id="gisDelayVal">+28 Months</span>
+</div>
+<div class="p-space-xs rounded-xl bg-surface-container-low/90 border border-white/70">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Cost Escalation</span>
+<span class="font-metric-display text-[18px] text-error font-bold" id="gisOverrunVal">+51.8%</span>
+</div>
+<div class="p-space-xs rounded-xl bg-surface-container-low/90 border border-white/70">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Physical Complete</span>
+<span class="font-title-md text-title-md font-bold text-on-surface" id="gisPhysicalVal">48.2%</span>
+</div>
+<div class="p-space-xs rounded-xl bg-surface-container-low/90 border border-white/70">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Financial Outflow</span>
+<span class="font-title-md text-title-md font-bold text-on-surface" id="gisFinancialVal">74.6%</span>
+</div>
+</div>
+<!-- SHAP Explainer Box in Drawer -->
+<div class="p-space-xs rounded-xl bg-error-container/40 border border-error-container text-on-error-container mb-space-sm">
+<div class="flex items-center gap-1 font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px]">crisis_alert</span>
+              Dominant Bottleneck Feature (SHAP +0.44)
+            </div>
+<p class="font-body-sm text-[12px] leading-relaxed mt-1" id="gisBottleneck">
+              Palghar &amp; Thane interstate land acquisition clearance pendency holding viaduct pier casting schedules.
+            </p>
+</div>
+<!-- Live Telemetry Streamlet -->
+<div class="flex flex-col gap-1 text-[11px] text-on-surface-variant">
+<div class="flex justify-between py-0.5 border-b border-black/5">
+<span class="">Concessionaire</span>
+<span class="font-semibold text-on-surface" id="gisContractor">Larsen &amp; Toubro Heavy Civil</span>
+</div>
+<div class="flex justify-between py-0.5 border-b border-black/5">
+<span class="">GatiShakti Portal Sync</span>
+<span class="font-medium text-emerald-700">Verified Stage-III Clearance</span>
+</div>
+<div class="flex justify-between py-0.5">
+<span class="">Next Milestone Target</span>
+<span class="font-semibold text-on-surface" id="gisNextMilestone">Surat Station Girders (Q4 FY25)</span>
+</div>
+</div>
+</div>
+<div class="pt-space-sm mt-space-sm border-t border-black/5 flex items-center justify-between gap-space-xs">
+<button class="flex-1 py-2 px-space-sm rounded-xl bg-surface-container hover:bg-surface-container-high transition text-on-surface font-label-md text-label-md font-semibold text-center border border-white/60">
+            Full GIS Drone Stack
+          </button>
+<button class="flex-1 py-2 px-space-sm rounded-xl bg-primary hover:bg-primary-container text-on-primary transition font-label-md text-label-md font-semibold text-center shadow-xs">
+            Issue Action Warrant
+          </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Analytical Deep Dive Bento Grid -->
+<section class="px-gutter-desktop pb-space-xl">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-stretch">
+<!-- Left Bento (7 cols): Trajectory Chart -->
+<div class="lg:col-span-7 glass-panel rounded-3xl p-space-lg flex flex-col justify-between">
+<div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-md">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Monte Carlo Predictive Projection</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">Cost &amp; Schedule Overrun Trajectory (FY20 – FY28F)</h2>
+</div>
+<!-- Segmented Switcher -->
+<div class="flex items-center p-1 bg-surface-container/70 backdrop-blur-md rounded-full border border-white/60">
+<button class="px-space-sm py-1 rounded-full text-label-sm font-label-sm bg-primary text-on-primary shadow-xs">Cost Curve</button>
+<button class="px-space-sm py-1 rounded-full text-label-sm font-label-sm text-on-surface-variant hover:text-on-surface">Schedule Drift</button>
+<button class="px-space-sm py-1 rounded-full text-label-sm font-label-sm text-on-surface-variant hover:text-on-surface">Physical vs Cash</button>
+</div>
+</div>
+<!-- Descriptive Subline -->
+<div class="flex items-center gap-space-md font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+<span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-outline"></span> Original Sanctioned Baseline</span>
+<span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-primary font-bold"></span> Historical Actuals</span>
+<span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-amber-600 border-b border-dashed"></span> AI Modeled Path (90% CI)</span>
+</div>
+<!-- Dual Axis SVG Chart with Confidence Band & Inflection Points -->
+<div class="relative w-full h-72 bg-surface-container-low/70 backdrop-blur-md border border-white/60 rounded-2xl p-space-md overflow-hidden flex flex-col justify-between">
+<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 740 220">
+<!-- Confidence Interval Shaded Band -->
+<polygon fill="rgba(217, 119, 6, 0.08)" points="360,135 440,115 520,95 600,75 680,48 680,95 600,125 520,145 440,165 360,170"></polygon>
+<!-- Grid Horizontal Lines -->
+<line stroke="#e3e2df" stroke-dasharray="3 3" x1="40" x2="700" y1="30" y2="30"></line>
+<line stroke="#e3e2df" stroke-dasharray="3 3" x1="40" x2="700" y1="80" y2="80"></line>
+<line stroke="#e3e2df" stroke-dasharray="3 3" x1="40" x2="700" y1="130" y2="130"></line>
+<line stroke="#e3e2df" x1="40" x2="700" y1="180" y2="180"></line>
+<!-- Baseline Sanctioned Curve (Dashed subtle) -->
+<path d="M 50 180 Q 200 170 360 160 T 680 148" fill="none" stroke="#747878" stroke-dasharray="4 4" stroke-width="2"></path>
+<!-- Historical Actuals Path -->
+<path d="M 50 180 Q 150 176 220 162 T 360 140" fill="none" stroke="#040505" stroke-linecap="round" stroke-width="3"></path>
+<!-- AI Predictive Spline -->
+<path d="M 360 140 C 440 125 520 102 680 62" fill="none" stroke="#ca6e00" stroke-linecap="round" stroke-width="3"></path>
+<!-- Inflection Point 1: Steel Escalation -->
+<circle cx="280" cy="152" fill="#040505" r="4"></circle>
+<line stroke="#747878" stroke-width="1" x1="280" x2="280" y1="152" y2="92"></line>
+<!-- Inflection Point 2: Forest Clearance ROW Bottleneck -->
+<circle cx="490" cy="112" fill="#ca6e00" r="5"></circle>
+<line stroke="#ca6e00" stroke-dasharray="2 2" stroke-width="1" x1="490" x2="490" y1="112" y2="42"></line>
+<!-- Axis Labels -->
+<text fill="#747878" font-family="Plus Jakarta Sans" font-size="11" x="50" y="202">FY20</text>
+<text fill="#747878" font-family="Plus Jakarta Sans" font-size="11" x="150" y="202">FY21</text>
+<text fill="#747878" font-family="Plus Jakarta Sans" font-size="11" x="250" y="202">FY22</text>
+<text fill="#747878" font-family="Plus Jakarta Sans" font-size="11" x="350" y="202">FY23 (Live)</text>
+<text fill="#747878" font-family="Plus Jakarta Sans" font-size="11" x="450" y="202">FY24F</text>
+<text fill="#747878" font-family="Plus Jakarta Sans" font-size="11" x="550" y="202">FY26F</text>
+<text fill="#747878" font-family="Plus Jakarta Sans" font-size="11" x="660" y="202">FY28F</text>
+</svg>
+<!-- Chart Annotations (HTML Overlays) -->
+<div class="absolute top-7 left-[36%] px-space-xs py-1 rounded-md bg-white/90 backdrop-blur-sm text-on-surface shadow-xs font-label-sm text-label-sm border border-black/5">
+<span class="text-on-surface-variant font-normal">Q2 FY22:</span> Input Material Spikes (+23%)
+            </div>
+<div class="absolute top-3 left-[62%] px-space-xs py-1 rounded-md bg-secondary-container/90 backdrop-blur-sm text-on-secondary-container shadow-xs font-label-sm text-label-sm border border-secondary-container">
+<span class="font-bold">Projected Divergence Peak:</span> +₹4.86L Cr
+            </div>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm border-t border-black/5">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-tertiary">info</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Model confidence scoring 92.4% validated against MoSPI 10-year historical backtesting.</span>
+</div>
+<button class="font-label-md text-label-md text-primary font-semibold hover:underline flex items-center gap-1">
+            Exploratory Model Weights <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Right Bento (5 cols): Sector Vulnerability Breakdown -->
+<div class="lg:col-span-5 glass-panel rounded-3xl p-space-lg flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-space-sm">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Sectoral Exposure</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">National Risk Matrix</h2>
+</div>
+<span class="font-label-sm text-label-sm px-2.5 py-0.5 rounded-full bg-surface-container/80 backdrop-blur-sm text-on-surface font-semibold border border-white/60">6 Ministries</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+            Identified capital clusters ranked by aggregate delay risk and fiscal escalation liability.
+          </p>
+<div class="flex flex-col gap-space-sm">
+<!-- Item 1: Railways -->
+<div class="p-space-sm rounded-2xl bg-white/70 backdrop-blur-sm border border-white/80 hover:bg-white transition flex flex-col gap-1.5 shadow-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">train</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Railways</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(418 Projects)</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md font-semibold text-error">71% Risk</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">₹1.82L Cr Exposure</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest/80 rounded-full h-2 overflow-hidden flex">
+<div class="bg-error h-full rounded-full" style="width: 71%"></div>
+</div>
+</div>
+<!-- Item 2: Road Transport & Highways -->
+<div class="p-space-sm rounded-2xl bg-white/70 backdrop-blur-sm border border-white/80 hover:bg-white transition flex flex-col gap-1.5 shadow-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">add_road</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Roads &amp; Highways (MoRTH)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(862 Projects)</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md font-semibold text-amber-700">48% Risk</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">₹1.14L Cr Exposure</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest/80 rounded-full h-2 overflow-hidden flex">
+<div class="bg-amber-600 h-full rounded-full" style="width: 48%"></div>
+</div>
+</div>
+<!-- Item 3: Petroleum & Natural Gas -->
+<div class="p-space-sm rounded-2xl bg-white/70 backdrop-blur-sm border border-white/80 hover:bg-white transition flex flex-col gap-1.5 shadow-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">oil_barrel</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Petroleum &amp; Gas</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(146 Projects)</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md font-semibold text-emerald-800">32% Risk</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">₹64,200 Cr</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest/80 rounded-full h-2 overflow-hidden flex">
+<div class="bg-emerald-700 h-full rounded-full" style="width: 32%"></div>
+</div>
+</div>
+<!-- Item 4: Power & Renewable Energy -->
+<div class="p-space-sm rounded-2xl bg-white/70 backdrop-blur-sm border border-white/80 hover:bg-white transition flex flex-col gap-1.5 shadow-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">bolt</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Power &amp; Green Energy</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(189 Projects)</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md font-semibold text-amber-700">41% Risk</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">₹42,800 Cr</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest/80 rounded-full h-2 overflow-hidden flex">
+<div class="bg-amber-600 h-full rounded-full" style="width: 41%"></div>
+</div>
+</div>
+<!-- Item 5: Urban Development & Metro -->
+<div class="p-space-sm rounded-2xl bg-white/70 backdrop-blur-sm border border-white/80 hover:bg-white transition flex flex-col gap-1.5 shadow-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">subway</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Urban Metro Transit</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">(98 Projects)</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-md text-label-md font-semibold text-error">66% Risk</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">₹78,500 Cr</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest/80 rounded-full h-2 overflow-hidden flex">
+<div class="bg-error h-full rounded-full" style="width: 66%"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-space-md flex items-center justify-between pt-space-xs font-body-sm text-body-sm border-t border-black/5">
+<span class="text-on-surface-variant">Ports &amp; Maritime: 28% risk (₹14,200 Cr)</span>
+<button class="font-label-md text-label-md text-primary font-semibold hover:underline">Complete Sector Matrix</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Geographic Distribution & Interactive State Analytics -->
+<section class="px-gutter-desktop pb-space-xl">
+<div class="glass-panel rounded-3xl p-space-lg flex flex-col gap-space-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Corridor Vulnerability Index</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">Interstate ROW, Forest Clearances &amp; Spatial Risk Hotspots</h2>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Focus Jurisdiction:</span>
+<span class="px-space-sm py-1 rounded-full bg-surface-container/80 backdrop-blur-md text-on-surface font-label-md text-label-md font-semibold border border-white/60">National Top 5 Impact</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-md">
+<!-- State 1: Maharashtra -->
+<div class="p-space-md rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 hover:bg-white transition flex flex-col justify-between gap-space-sm shadow-xs">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold">Maharashtra</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Central / Western Grid</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container font-bold">42 Critical</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Avg Milestone Lag</span>
+<span class="font-semibold text-error">24.6 Mo</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">ROW Clearance Pendency</span>
+<span class="font-semibold text-on-surface">18 Packages</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest/80 rounded-full h-1.5 overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 78%"></div>
+</div>
+</div>
+<!-- State 2: Uttar Pradesh -->
+<div class="p-space-md rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 hover:bg-white transition flex flex-col justify-between gap-space-sm shadow-xs">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold">Uttar Pradesh</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Northern Corridor</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-container text-on-secondary-container font-bold">34 Critical</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Avg Milestone Lag</span>
+<span class="font-semibold text-amber-700">14.2 Mo</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Land Disputes (PMAY/NH)</span>
+<span class="font-semibold text-on-surface">12 Sites</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest/80 rounded-full h-1.5 overflow-hidden">
+<div class="bg-amber-600 h-full rounded-full" style="width: 52%"></div>
+</div>
+</div>
+<!-- State 3: Odisha -->
+<div class="p-space-md rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 hover:bg-white transition flex flex-col justify-between gap-space-sm shadow-xs">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold">Odisha</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Eastern Mineral Belt</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-container text-on-secondary-container font-bold">29 Critical</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Avg Milestone Lag</span>
+<span class="font-semibold text-amber-700">18.1 Mo</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Forest Clearance Stage II</span>
+<span class="font-semibold text-on-surface">16 Parcels</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest/80 rounded-full h-1.5 overflow-hidden">
+<div class="bg-amber-600 h-full rounded-full" style="width: 61%"></div>
+</div>
+</div>
+<!-- State 4: Assam & NE -->
+<div class="p-space-md rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 hover:bg-white transition flex flex-col justify-between gap-space-sm shadow-xs">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold">Assam &amp; NE</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Hilly &amp; Border Corridor</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container font-bold">31 Critical</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Avg Milestone Lag</span>
+<span class="font-semibold text-error">32.8 Mo</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Monsoon Geology Hazard</span>
+<span class="font-semibold text-on-surface">22 Bridges</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest/80 rounded-full h-1.5 overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 86%"></div>
+</div>
+</div>
+<!-- State 5: Tamil Nadu -->
+<div class="p-space-md rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 hover:bg-white transition flex flex-col justify-between gap-space-sm shadow-xs">
+<div class="flex items-start justify-between">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface font-semibold">Tamil Nadu</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Southern Industrial Axis</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface font-semibold">17 Nominal</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Avg Milestone Lag</span>
+<span class="font-semibold text-on-surface">7.4 Mo</span>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span class="">Utility Relocation</span>
+<span class="font-semibold text-on-surface">6 Issues</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest/80 rounded-full h-1.5 overflow-hidden">
+<div class="bg-emerald-700 h-full rounded-full" style="width: 29%"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Critical Projects Requiring Executive Intervention Table -->
+<section class="px-gutter-desktop pb-space-xl">
+<div class="glass-panel rounded-3xl p-space-lg flex flex-col">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-md">
+<div>
+<div class="flex items-center gap-space-xs mb-1">
+<span class="px-space-xs py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">Top Priority Watchlist</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Filtered by Highest Escalation Potential</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-primary">Mega Infrastructure Interventions Ledger</h2>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-full bg-surface-container/80 backdrop-blur-md hover:bg-surface-container text-on-surface font-label-md text-label-md transition border border-white/60">
+            Filter: Divergence &gt; 25%
+          </button>
+<button class="px-space-sm py-1.5 rounded-full bg-surface-container/80 backdrop-blur-md hover:bg-surface-container text-on-surface font-label-md text-label-md transition border border-white/60">
+            All 89 Flagged
+          </button>
+</div>
+</div>
+<!-- Modern Flat Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant bg-surface-container-low/90 backdrop-blur-sm rounded-xl">
+<th class="py-3.5 px-space-md min-w-[280px] text-left">Project Identifier &amp; Package</th>
+<th class="py-3.5 px-space-md">Ministry &amp; Sector</th>
+<th class="py-3.5 px-space-md">Physical vs Financial Spent</th>
+<th class="py-3.5 px-space-md text-right">Cost Delta (Est)</th>
+<th class="py-3.5 px-space-md">Delay Forecast</th>
+<th class="py-3.5 px-space-md">Key SHAP Driver Tag</th>
+<th class="py-3.5 px-space-md text-right">Intervention</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-black/5">
+<!-- Row 1: Bullet Train C4 -->
+<tr class="hover:bg-white/60 transition group">
+<td class="py-space-md px-space-md min-w-[280px] text-left">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary font-semibold">Mumbai-Ahmedabad High Speed Rail (C4 Pkg)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">NHSRCL-MAH-04 • Concessionaire: L&amp;T Construction</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">train</span>
+<span class="font-body-md text-body-md text-on-surface">Railways</span>
+</div>
+</td>
+<td class="py-space-md px-space-md min-w-[180px]">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Physical: 48%</span>
+<span class="text-error font-semibold">Financial: 74%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 48%"></div>
+<div class="bg-error h-full" style="width: 26%"></div>
+</div>
+<span class="font-label-sm text-label-sm text-error">High Red Flag Divergence (+26%)</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex flex-col items-end">
+<span class="font-metric-display text-[16px] text-error font-bold">₹1.08L → ₹1.64L Cr</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">+51.8% Escalation</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container font-bold">+28 Months</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[12px]">gavel</span>
+                  Land ROW Litigation
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-full hover:bg-surface-container text-on-surface-variant hover:text-primary transition" title="SHAP Feature Explainer">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+</button>
+<button class="px-space-sm py-1 rounded-full bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition shadow-sm">
+                    Dispatch Notice
+                  </button>
+</div>
+</td>
+</tr>
+<!-- Row 2: USBRL Rail Link -->
+<tr class="hover:bg-white/60 transition group">
+<td class="py-space-md px-space-md min-w-[280px] text-left">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary font-semibold">Udhampur-Srinagar-Baramulla Rail Link</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">USBRL-NR-02 • Northern Railway</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">terrain</span>
+<span class="font-body-md text-body-md text-on-surface">Railways</span>
+</div>
+</td>
+<td class="py-space-md px-space-md min-w-[180px]">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Physical: 89%</span>
+<span class="text-on-surface font-semibold">Financial: 94%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 89%"></div>
+<div class="bg-amber-600 h-full" style="width: 5%"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tunnel T-1 Tunneling Influx</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex flex-col items-end">
+<span class="font-metric-display text-[16px] text-error font-bold">₹28,500 → ₹37,200 Cr</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">+30.5% Overrun</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container font-bold">+18 Months</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container-highest text-on-surface">
+<span class="material-symbols-outlined text-[12px]">landslide</span>
+                  Geotechnical Shear Zone
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-full hover:bg-surface-container text-on-surface-variant hover:text-primary transition" title="SHAP Feature Explainer">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-surface-container-high transition">
+                    Technical Audit
+                  </button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Vadodara-Mumbai Expressway -->
+<tr class="hover:bg-white/60 transition group">
+<td class="py-space-md px-space-md min-w-[280px] text-left">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary font-semibold">Vadodara-Mumbai Expressway Phase II</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">NHAI-VME-08 • Package 11 SPV</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">add_road</span>
+<span class="font-body-md text-body-md text-on-surface">MoRTH</span>
+</div>
+</td>
+<td class="py-space-md px-space-md min-w-[180px]">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Physical: 35%</span>
+<span class="text-error font-semibold">Financial: 59%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 35%"></div>
+<div class="bg-error h-full" style="width: 24%"></div>
+</div>
+<span class="font-label-sm text-label-sm text-error">Contractor Cashflow Stress</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex flex-col items-end">
+<span class="font-metric-display text-[16px] text-on-surface font-bold">₹14,200 → ₹18,100 Cr</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">+27.4% Overrun</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-container text-on-secondary-container font-bold">+15 Months</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-error-container text-on-error-container">
+<span class="material-symbols-outlined text-[12px]">payments</span>
+                  Contractor Liquidity
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-full hover:bg-surface-container text-on-surface-variant hover:text-primary transition" title="SHAP Feature Explainer">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+</button>
+<button class="px-space-sm py-1 rounded-full bg-primary text-on-primary font-label-sm text-label-sm hover:bg-primary-container transition shadow-sm">
+                    Dispatch Notice
+                  </button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Paradip-Hyderabad Petroleum Pipeline -->
+<tr class="hover:bg-white/60 transition group">
+<td class="py-space-md px-space-md min-w-[280px] text-left">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary font-semibold">Paradip-Hyderabad Petroleum Pipeline (PHPL)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">IOCL-PHPL-03 • Indian Oil Corp</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">local_gas_station</span>
+<span class="font-body-md text-body-md text-on-surface">Petroleum</span>
+</div>
+</td>
+<td class="py-space-md px-space-md min-w-[180px]">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Physical: 68%</span>
+<span class="text-on-surface font-semibold">Financial: 72%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 68%"></div>
+<div class="bg-amber-600 h-full" style="width: 4%"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Balanced Expenditure Curve</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex flex-col items-end">
+<span class="font-metric-display text-[16px] text-on-surface font-bold">₹3,800 → ₹4,250 Cr</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">+11.8% Drift</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container-high text-on-surface font-semibold">+6 Months</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-container text-on-secondary-container">
+<span class="material-symbols-outlined text-[12px]">forest</span>
+                  Stage II Wildlife Nod
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-full hover:bg-surface-container text-on-surface-variant hover:text-primary transition" title="SHAP Feature Explainer">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-surface-container-high transition">
+                    Expedite MoEFCC
+                  </button>
+</div>
+</td>
+</tr>
+<!-- Row 5: Gevra Open Cast Expansion -->
+<tr class="hover:bg-white/60 transition group">
+<td class="py-space-md px-space-md min-w-[280px] text-left">
+<div class="flex flex-col">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary font-semibold">Gevra Open Cast Mine Expansion (70 MTPA)</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">SECL-COAL-11 • South Eastern Coalfields</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">precision_manufacturing</span>
+<span class="font-body-md text-body-md text-on-surface">Coal &amp; Mines</span>
+</div>
+</td>
+<td class="py-space-md px-space-md min-w-[180px]">
+<div class="flex flex-col gap-1">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant">Physical: 52%</span>
+<span class="text-on-surface font-semibold">Financial: 61%</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 flex overflow-hidden">
+<div class="bg-primary h-full" style="width: 52%"></div>
+<div class="bg-amber-600 h-full" style="width: 9%"></div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Heavy Machinery Import Lag</span>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex flex-col items-end">
+<span class="font-metric-display text-[16px] text-on-surface font-bold">₹11,800 → ₹13,400 Cr</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">+13.5% Overrun</span>
+</div>
+</td>
+<td class="py-space-md px-space-md">
+<span class="px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-secondary-container text-on-secondary-container font-bold">+11 Months</span>
+</td>
+<td class="py-space-md px-space-md">
+<span class="inline-flex items-center gap-1 px-space-xs py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container-highest text-on-surface">
+<span class="material-symbols-outlined text-[12px]">swap_horiz</span>
+                  R&amp;R Resettlement
+                </span>
+</td>
+<td class="py-space-md px-space-md text-right">
+<div class="flex items-center justify-end gap-space-xs">
+<button class="p-1.5 rounded-full hover:bg-surface-container text-on-surface-variant hover:text-primary transition" title="SHAP Feature Explainer">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+</button>
+<button class="px-space-sm py-1 rounded-full bg-surface-container text-on-surface font-label-sm text-label-sm hover:bg-surface-container-high transition">
+                    State Consult
+                  </button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Pagination -->
+<div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-sm border-t border-black/5">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Showing 5 of 89 high-priority monitored interventions</span>
+<div class="flex items-center gap-1">
+<button class="px-space-sm py-1 rounded-full bg-surface-container/80 backdrop-blur-md hover:bg-surface-container text-on-surface font-label-md text-label-md border border-white/60">Previous</button>
+<span class="px-3 py-1 font-label-sm text-label-sm text-on-surface font-bold">1 / 18</span>
+<button class="px-space-sm py-1 rounded-full bg-surface-container/80 backdrop-blur-md hover:bg-surface-container text-on-surface font-label-md text-label-md border border-white/60">Next</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Live Early Warning Signal Stream (Telemetry Drawer / Ticker) -->
+<section class="px-gutter-desktop pb-space-3xl">
+<div class="glass-panel rounded-3xl p-space-md flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-2xl bg-primary text-on-primary flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-[20px]">crisis_alert</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-md text-title-md text-primary font-semibold">Live Early Warning Pulse</span>
+<span class="inline-block w-2 h-2 rounded-full bg-error animate-ping"></span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Streaming 24/7 telemetric drift flags</span>
+</div>
+</div>
+<!-- Dynamic Warning Stream Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm flex-1 w-full">
+<!-- Signal 1 -->
+<div class="bg-white/80 backdrop-blur-sm border border-white/90 p-space-sm rounded-2xl flex flex-col justify-between gap-1 shadow-xs hover:shadow transition">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">14m ago • NHAI Corridor 14</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-error-container text-on-error-container uppercase">Critical</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface truncate font-semibold">Bhopal Bypass Pkg-2: Subcontractor default risk identified.</p>
+<span class="font-label-sm text-label-sm text-on-secondary-container">Action: Escrow audit recommended</span>
+</div>
+<!-- Signal 2 -->
+<div class="bg-white/80 backdrop-blur-sm border border-white/90 p-space-sm rounded-2xl flex flex-col justify-between gap-1 shadow-xs hover:shadow transition">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">32m ago • Dedicated Freight</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-secondary-container text-on-secondary-container uppercase">Moderate</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface truncate font-semibold">Eastern DFC (Sonnagar): Track ballast material delivery paused.</p>
+<span class="font-label-sm text-label-sm text-on-secondary-container">Action: Reroute aggregate rakes</span>
+</div>
+<!-- Signal 3 -->
+<div class="bg-white/80 backdrop-blur-sm border border-white/90 p-space-sm rounded-2xl flex flex-col justify-between gap-1 shadow-xs hover:shadow transition">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">1h ago • Chennai Metro Ph-II</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-surface-container-high text-on-surface uppercase">Notice</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface truncate font-semibold">TBM-03 boring through fractured granite at Adyar River.</p>
+<span class="font-label-sm text-label-sm text-on-secondary-container">Action: Slurry pressure increased</span>
+</div>
+</div>
+<button class="hidden xl:flex items-center gap-1 font-label-md text-label-md text-primary font-semibold hover:underline whitespace-nowrap pl-space-xs">
+        View All 42 Alerts <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</section>
+<!-- Interactive JavaScript Micro-actions & GIS Inspector Switcher -->
+<script>
+    const gisData = {
+      hsr: {
+        status: 'Critical Overrun Divergence',
+        statusColor: 'text-error',
+        dotColor: 'bg-red-600',
+        package: 'NHSRCL-MAH-04',
+        title: 'Mumbai-Ahmedabad High Speed Rail (C4 Pkg)',
+        subtitle: '237 km Elevated Viaduct & Vapi-Surat Alignment',
+        delay: '+28 Months',
+        overrun: '+51.8%',
+        physical: '48.2%',
+        financial: '74.6%',
+        bottleneck: 'Palghar & Thane interstate land acquisition clearance pendency holding viaduct pier casting schedules.',
+        contractor: 'Larsen & Toubro Heavy Civil',
+        milestone: 'Surat Station Girders (Q4 FY25)'
+      },
+      chenab: {
+        status: 'Extreme Geotechnical Hazard',
+        statusColor: 'text-error',
+        dotColor: 'bg-red-600',
+        package: 'USBRL-NR-02',
+        title: 'Chenab Railway Arch Bridge & Katra-Banihal',
+        subtitle: '359m World Highest Arch Bridge & T-1 Tunneling',
+        delay: '+18 Months',
+        overrun: '+30.5%',
+        physical: '89.4%',
+        financial: '94.2%',
+        bottleneck: 'Main Boundary Thrust shear zone seismic stabilization & water ingress inside Tunnel T-1.',
+        contractor: 'Northern Railway / AFCONS SPV',
+        milestone: 'Full Track Commissioning (Q2 FY25)'
+      },
+      dme: {
+        status: 'Elevated ROW Clearance Drift',
+        statusColor: 'text-amber-700',
+        dotColor: 'bg-amber-600',
+        package: 'NHAI-DME-PKG-12',
+        title: 'Delhi-Mumbai Expressway (Pkg 12 Spur)',
+        subtitle: '8-Lane Greenfield Corridor & Wildlife Underpasses',
+        delay: '+15 Months',
+        overrun: '+27.4%',
+        physical: '62.0%',
+        financial: '69.8%',
+        bottleneck: 'Ranthambore eco-sensitive buffer zone diversion approval pending Stage-II MoEFCC nod.',
+        contractor: 'Patel Infrastructure SPV',
+        milestone: 'Mukundra Hills Tunnel Piercing'
+      },
+      vizhinjam: {
+        status: 'Maritime Breakwater Berth Expansion',
+        statusColor: 'text-blue-700',
+        dotColor: 'bg-blue-600',
+        package: 'VISL-PH-02',
+        title: 'Vizhinjam International Transshipment Port',
+        subtitle: 'Deepwater Container Terminal & Rail Linkage',
+        delay: '+4 Months',
+        overrun: '+6.2%',
+        physical: '78.5%',
+        financial: '81.0%',
+        bottleneck: 'Granite boulder availability for 2.9km breakwater arm during high southwest swell.',
+        contractor: 'Adani Ports & SEZ',
+        milestone: 'Commercial Mother Vessel Berth (Q1 FY26)'
+      }
+    };
+
+    function selectGisProject(key) {
+      const data = gisData[key];
+      if (!data) return;
+      document.getElementById('gisRiskStatus').textContent = data.status;
+      document.getElementById('gisRiskStatus').className = `font-label-sm text-label-sm uppercase tracking-wider ${data.statusColor} font-bold`;
+      document.getElementById('gisPackageId').textContent = data.package;
+      document.getElementById('gisTitle').textContent = data.title;
+      document.getElementById('gisSubtitle').textContent = data.subtitle;
+      document.getElementById('gisDelayVal').textContent = data.delay;
+      document.getElementById('gisOverrunVal').textContent = data.overrun;
+      document.getElementById('gisPhysicalVal').textContent = data.physical;
+      document.getElementById('gisFinancialVal').textContent = data.financial;
+      document.getElementById('gisBottleneck').textContent = data.bottleneck;
+      document.getElementById('gisContractor').textContent = data.contractor;
+      document.getElementById('gisNextMilestone').textContent = data.milestone;
+
+      // Highlight container animation
+      const box = document.getElementById('gisInspectorBox');
+      box.classList.add('ring-2', 'ring-primary/20');
+      setTimeout(() => box.classList.remove('ring-2', 'ring-primary/20'), 800);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const inferenceBtn = document.getElementById('runInferenceBtn');
+      if (inferenceBtn) {
+        inferenceBtn.addEventListener('click', () => {
+          const originalContent = inferenceBtn.innerHTML;
+          inferenceBtn.disabled = true;
+          inferenceBtn.classList.add('opacity-75');
+          inferenceBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[16px] animate-spin">rotate_right</span>
+            <span>Running SHAP Models...</span>
+          `;
+          setTimeout(() => {
+            inferenceBtn.innerHTML = `
+              <span class="material-symbols-outlined text-[16px] text-emerald-600">check_circle</span>
+              <span>1,842 Inferences Refreshed</span>
+            `;
+            setTimeout(() => {
+              inferenceBtn.innerHTML = originalContent;
+              inferenceBtn.disabled = false;
+              inferenceBtn.classList.remove('opacity-75');
+            }, 2500);
+          }, 1800);
+        });
+      }
+    });
+  </script>
+</div></main></div>
+
+
+</body></html>
