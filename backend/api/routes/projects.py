@@ -7,6 +7,17 @@ from database import get_db
 from models import Project
 from ml.predict import predict_project
 from ml.shap_explain import get_shap_explanation
+from ml.historical_forecast import (
+    get_historical_benchmarks,
+    predict_project_overruns,
+    get_cost_drivers,
+    simulate_project_intervention
+)
+from pydantic import BaseModel
+from typing import Dict, Any
+
+class SimulationRequest(BaseModel):
+    adjustments: Dict[str, Any]
 
 router = APIRouter(prefix="/api", tags=["Projects & Stats"])
 
@@ -93,6 +104,26 @@ def explain_single_project(project_id: str, db: Session = Depends(get_db)):
         "project_name": p.project_name,
         "explanation": explanation
     }
+
+@router.get("/projects/{project_id}/forecast")
+def forecast_single_project(project_id: str, db: Session = Depends(get_db)):
+    p = db.query(Project).filter(Project.project_id == project_id).first()
+    if not p:
+        raise HTTPException(status_code=404, detail="Project not found")
+        
+    p_dict = {c.name: getattr(p, c.name) for c in Project.__table__.columns}
+    forecast = predict_project_overruns(p_dict)
+    return forecast
+
+@router.post("/projects/{project_id}/simulate")
+def simulate_single_project(project_id: str, req: SimulationRequest, db: Session = Depends(get_db)):
+    p = db.query(Project).filter(Project.project_id == project_id).first()
+    if not p:
+        raise HTTPException(status_code=404, detail="Project not found")
+        
+    p_dict = {c.name: getattr(p, c.name) for c in Project.__table__.columns}
+    sim_result = simulate_project_intervention(p_dict, req.adjustments)
+    return sim_result
 
 @router.get("/stats/summary")
 def get_stats_summary(db: Session = Depends(get_db)):
@@ -200,3 +231,11 @@ def get_benchmarks():
             data = json.load(f)
             return data
     return {"status": "Model comparison file pending training."}
+
+@router.get("/stats/historical-completion")
+def get_historical_completion_stats():
+    return get_historical_benchmarks()
+
+@router.get("/stats/drivers")
+def get_cost_driver_stats():
+    return get_cost_drivers()

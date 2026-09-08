@@ -10,16 +10,19 @@ router = APIRouter(prefix="/api/alerts", tags=["Alerts"])
 @router.get("")
 def get_alerts(
     severity: str = Query(None),
+    statutory_level: str = Query(None),
     sector: str = Query(None),
     state: str = Query(None),
     is_resolved: bool = Query(None),
-    limit: int = Query(100, ge=1, le=1000),
+    limit: int = Query(150, ge=1, le=1000),
     db: Session = Depends(get_db)
 ):
     query = db.query(Alert)
     
     if severity and severity != "All":
         query = query.filter(Alert.severity == severity)
+    if statutory_level and statutory_level != "All":
+        query = query.filter(Alert.statutory_level.ilike(f"%{statutory_level}%"))
     if sector and sector != "All":
         query = query.filter(Alert.sector == sector)
     if state and state != "All":
@@ -34,13 +37,15 @@ def get_alerts(
     critical_c = db.query(Alert).filter(Alert.severity == "CRITICAL", Alert.is_resolved == False).count()
     high_c = db.query(Alert).filter(Alert.severity == "HIGH", Alert.is_resolved == False).count()
     med_c = db.query(Alert).filter(Alert.severity == "MEDIUM", Alert.is_resolved == False).count()
+    low_c = db.query(Alert).filter(Alert.severity == "LOW", Alert.is_resolved == False).count()
     resolved_c = db.query(Alert).filter(Alert.is_resolved == True).count()
     
     return {
-        "total_active": critical_c + high_c + med_c,
+        "total_active": critical_c + high_c + med_c + low_c,
         "critical_count": critical_c,
         "high_count": high_c,
         "medium_count": med_c,
+        "advisory_count": low_c,
         "resolved_count": resolved_c,
         "alerts": alerts
     }
@@ -62,6 +67,6 @@ def resolve_all_alerts(db: Session = Depends(get_db)):
     return {"status": "success", "resolved_count": updated}
 
 @router.get("/generate")
-def trigger_alert_generation(db: Session = Depends(get_db)):
-    new_count = generate_all_alerts(db)
+def trigger_alert_generation(force: bool = Query(False), db: Session = Depends(get_db)):
+    new_count = generate_all_alerts(db, force_refresh=force)
     return {"status": "success", "new_alerts_created": new_count}

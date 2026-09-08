@@ -60,6 +60,8 @@ class Alert(Base):
     state = Column(String(100))
     alert_type = Column(String(100), nullable=False)
     severity = Column(String(20), nullable=False) # CRITICAL, HIGH, MEDIUM, LOW
+    statutory_level = Column(String(50), default='Level 2 - High') # Level 1 - Critical, Level 2 - High, Level 3 - Moderate, Level 4 - Advisory
+    action_required = Column(Text, default='Inter-Ministerial Review Required')
     message = Column(Text, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     is_resolved = Column(Boolean, default=False)

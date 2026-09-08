@@ -13,7 +13,9 @@ import {
   Clock, 
   ShieldCheck, 
   Menu, 
-  X 
+  X,
+  MapPin,
+  TrendingUp
 } from 'lucide-react';
 import HexLogo from './HexLogo';
 
@@ -40,9 +42,11 @@ export default function Layout() {
 
   const navItems = [
     { to: '/', label: 'Overview', icon: LayoutDashboard },
+    { to: '/map', label: 'Surveillance Map', icon: MapPin },
     { to: '/projects', label: 'Projects Registry', icon: Layers },
-    { to: '/alerts', label: 'Risk Surveillance', icon: AlertTriangle, badge: '127' },
-    { to: '/benchmarks', label: 'Model Metrics', icon: BarChart3 },
+    { to: '/alerts', label: 'Risk Surveillance', icon: AlertTriangle, badge: 'EWAS' },
+    { to: '/benchmarks', label: 'Benchmarking & Analytics', icon: BarChart3 },
+    { to: '/drivers', label: 'Cost Drivers & What-If', icon: TrendingUp },
     { to: '/assistant', label: 'Intelligence Core', icon: Bot, isAi: true }
   ];
 

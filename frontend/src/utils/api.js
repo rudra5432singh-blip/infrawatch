@@ -11,11 +11,16 @@ export const getStatsSummary = () => api.get('/stats/summary').then(res => res.d
 export const getStatsSector = () => api.get('/stats/sector').then(res => res.data);
 export const getStatsState = () => api.get('/stats/state').then(res => res.data);
 export const getBenchmarks = () => api.get('/stats/benchmarks').then(res => res.data);
+export const getHistoricalCompletion = () => api.get('/stats/historical-completion').then(res => res.data);
+export const getCostDrivers = () => api.get('/stats/drivers').then(res => res.data);
 
 export const getProjects = (params) => api.get('/projects', { params }).then(res => res.data);
 export const getProjectDetail = (id) => api.get(`/projects/${id}`).then(res => res.data);
 export const runProjectPredict = (id) => api.get(`/projects/${id}/predict`).then(res => res.data);
 export const runProjectExplain = (id) => api.get(`/projects/${id}/explain`).then(res => res.data);
+export const getProjectForecast = (id) => api.get(`/projects/${id}/forecast`).then(res => res.data);
+export const simulateProjectIntervention = (id, adjustments) => 
+  api.post(`/projects/${id}/simulate`, { adjustments }).then(res => res.data);
 
 export const getAlerts = (params) => api.get('/alerts', { params }).then(res => res.data);
 export const resolveAlert = (id) => api.post(`/alerts/${id}/resolve`).then(res => res.data);

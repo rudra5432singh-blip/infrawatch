@@ -12,15 +12,25 @@ import {
   FileText,
   Activity,
   CheckCircle,
-  HelpCircle
+  HelpCircle,
+  TrendingUp,
+  Sliders
 } from 'lucide-react';
-import { getProjectDetail, runProjectPredict, runProjectExplain, getAlerts, resolveAlert } from '../utils/api';
+import { 
+  getProjectDetail, 
+  runProjectPredict, 
+  runProjectExplain, 
+  getAlerts, 
+  resolveAlert,
+  getProjectForecast 
+} from '../utils/api';
 
 export default function ProjectDetail() {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [predictions, setPredictions] = useState(null);
   const [shapData, setShapData] = useState(null);
+  const [forecast, setForecast] = useState(null);
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
@@ -29,15 +39,17 @@ export default function ProjectDetail() {
     async function loadProject() {
       try {
         setLoading(true);
-        const [projRes, predRes, shapRes, alRes] = await Promise.all([
+        const [projRes, predRes, shapRes, alRes, fcRes] = await Promise.all([
           getProjectDetail(id),
           runProjectPredict(id),
           runProjectExplain(id),
-          getAlerts({ limit: 20 })
+          getAlerts({ limit: 20 }),
+          getProjectForecast(id).catch(() => null)
         ]);
         setProject(projRes);
         setPredictions(predRes.predictions);
         setShapData(shapRes.explanation);
+        setForecast(fcRes);
         
         const projAlerts = (alRes.alerts || []).filter(a => a.project_id === id);
         setAlerts(projAlerts);
@@ -200,6 +212,75 @@ export default function ProjectDetail() {
           </div>
         </div>
       </div>
+
+      {/* EMPIRICAL HISTORICAL FORECAST & STATUTORY BENCHMARK MONITOR */}
+      {forecast && (
+        <div className="glass-card p-5 sm:p-7 rounded-2xl space-y-4 border-2 border-[rgba(217,119,6,0.2)] bg-gradient-to-br from-[#FAF9F5] to-[#FAF9F5]/90">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[rgba(61,58,52,0.08)]">
+            <div className="flex items-center gap-2.5">
+              <TrendingUp size={20} className="text-[#D97706]" />
+              <div>
+                <h2 className="font-serif text-base sm:text-lg font-bold text-[#1B1C1A]">
+                  AI-Powered Historical Forecast & Delivery Calibration
+                </h2>
+                <p className="text-[11px] text-[#8D8574]">
+                  Benchmarked against 276 completed MoSPI projects in {forecast.sector} (Duration Multiplier: {forecast.historical_sector_multiplier}x)
+                </p>
+              </div>
+            </div>
+
+            <Link
+              to="/drivers"
+              className="btn-sovereign-secondary px-3.5 py-1.5 text-xs font-semibold flex items-center gap-1.5 self-start sm:self-center"
+            >
+              <Sliders size={13} />
+              <span>Simulate What-If Scenarios</span>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono tabular-nums">
+            <div className="p-3.5 rounded-xl bg-[#FAF9F5] border border-[rgba(61,58,52,0.08)] space-y-1">
+              <span className="text-[10px] uppercase text-[#8D8574] block font-semibold">Predicted Final Cost</span>
+              <span className="text-lg sm:text-xl font-bold text-[#1B1C1A] block">
+                ₹ {forecast.predicted_final_cost_cr} Cr
+              </span>
+              <span className="text-[11px] text-[#D97706] font-bold block">
+                +₹ {forecast.predicted_cost_overrun_cr} Cr (+{forecast.predicted_cost_overrun_pct}%)
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-[#FAF9F5] border border-[rgba(61,58,52,0.08)] space-y-1">
+              <span className="text-[10px] uppercase text-[#8D8574] block font-semibold">Predicted Delay</span>
+              <span className="text-lg sm:text-xl font-bold text-[#C25E3E] block">
+                +{forecast.predicted_delay_months} Months
+              </span>
+              <span className="text-[11px] text-[#655E4E] block">
+                Total: {forecast.predicted_total_duration_months} Mo (Sanction: {forecast.sanctioned_duration_months} Mo)
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-[#FAF9F5] border border-[rgba(61,58,52,0.08)] space-y-1">
+              <span className="text-[10px] uppercase text-[#8D8574] block font-semibold">Projected Commissioning</span>
+              <span className="text-base sm:text-lg font-bold text-[#1B1C1A] block">
+                {new Date(forecast.predicted_completion_date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
+              </span>
+              <span className="text-[11px] text-[#2C3E50] block">
+                {forecast.predicted_remaining_months} Months Remaining
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-[#FAF9F5] border border-[rgba(61,58,52,0.08)] space-y-1">
+              <span className="text-[10px] uppercase text-[#8D8574] block font-semibold">Peer Velocity Index</span>
+              <span className="text-lg sm:text-xl font-bold text-[#2D3A30] block">
+                {forecast.peer_velocity_index}x
+              </span>
+              <span className="text-[11px] text-[#655E4E] block">
+                Relative to completed sector peers
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MIDDLE SECTION — TWO COLUMNS */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
