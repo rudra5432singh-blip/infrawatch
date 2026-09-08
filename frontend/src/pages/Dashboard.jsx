@@ -1,21 +1,25 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   AlertTriangle, 
   TrendingUp, 
   CheckCircle2, 
   Layers, 
   ExternalLink, 
-  Filter, 
-  Search,
   ArrowUpRight,
   ShieldAlert,
   Sparkles,
   MapPin,
-  HelpCircle,
   BarChart2,
-  PieChart
+  BrainCircuit,
+  Scale,
+  Zap,
+  Play,
+  ChevronDown,
+  ChevronUp,
+  Sliders,
+  ChevronRight
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -31,7 +35,7 @@ import {
   CartesianGrid,
   ReferenceLine
 } from 'recharts';
-import { getStatsSummary, getStatsSector, getStatsState, getProjects, getAlerts } from '../utils/api';
+import { getStatsSummary, getStatsSector, getStatsState, getProjects, getAlerts, getPrescriptiveRadar } from '../utils/api';
 import { useCountUp } from '../hooks/useCountUp';
 
 const containerVariants = {
@@ -58,8 +62,8 @@ export default function Dashboard() {
   const [sectorStats, setSectorStats] = useState([]);
   const [stateStats, setStateStats] = useState(null);
   const [recentAlerts, setRecentAlerts] = useState([]);
-  const [projectsData, setProjectsData] = useState({ projects: [], total: 0 });
   const [scatterProjects, setScatterProjects] = useState([]);
+  const [prescriptiveRadar, setPrescriptiveRadar] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Sector Chart Controls
@@ -68,28 +72,27 @@ export default function Dashboard() {
   // Scatter Chart Quadrant Filter
   const [scatterQuadrant, setScatterQuadrant] = useState('all'); // 'all' | 'compound' | 'schedule' | 'fiscal' | 'nominal'
 
-  // Filters for projects table
-  const [sectorFilter, setSectorFilter] = useState('All');
-  const [stateFilter, setStateFilter] = useState('All');
-  const [riskFilter, setRiskFilter] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  // Collapsible Prescriptive Governance Details (Default collapsed to prevent text overload)
+  const [showPrescriptiveDetails, setShowPrescriptiveDetails] = useState(false);
 
   useEffect(() => {
     async function loadDashboardData() {
       try {
         setLoading(true);
-        const [sumRes, secRes, stRes, alRes, scRes] = await Promise.all([
+        const [sumRes, secRes, stRes, alRes, scRes, radRes] = await Promise.all([
           getStatsSummary(),
           getStatsSector(),
           getStatsState(),
-          getAlerts({ limit: 8 }),
-          getProjects({ page: 1, page_size: 90, sort_by: 'risk_score', order: 'desc' })
+          getAlerts({ limit: 6 }),
+          getProjects({ page: 1, page_size: 90, sort_by: 'risk_score', order: 'desc' }),
+          getPrescriptiveRadar().catch(() => null)
         ]);
         setSummary(sumRes);
         setSectorStats(secRes || []);
         setStateStats(stRes);
         setRecentAlerts(alRes.alerts || []);
         setScatterProjects(scRes.projects || []);
+        setPrescriptiveRadar(radRes);
       } catch (err) {
         console.error('Failed to load dashboard data:', err);
       } finally {
@@ -99,30 +102,13 @@ export default function Dashboard() {
     loadDashboardData();
   }, []);
 
-  useEffect(() => {
-    async function loadTableProjects() {
-      try {
-        const res = await getProjects({
-          page: 1,
-          page_size: 10,
-          sector: sectorFilter,
-          state: stateFilter,
-          risk_category: riskFilter,
-          search: searchQuery
-        });
-        setProjectsData(res);
-      } catch (err) {
-        console.error('Failed to fetch projects table:', err);
-      }
-    }
-    loadTableProjects();
-  }, [sectorFilter, stateFilter, riskFilter, searchQuery]);
-
   // KPI Animated Numbers
   const totalProjectsCount = useCountUp(summary?.total_projects || 0);
   const highRiskCount = useCountUp(summary?.high_risk_projects || 0);
   const avgCostOverrun = useCountUp(summary?.avg_cost_overrun_rate || 0, 1000, 1);
   const onTrackPct = useCountUp(summary?.on_track_percentage || 0, 1000, 1);
+  const nationalCapitalPreservable = useCountUp(prescriptiveRadar?.total_national_capital_preservable_cr || 18520, 1000, 0);
+  const nationalDelayRecoverable = useCountUp(prescriptiveRadar?.total_national_delay_recoverable_months || 1390, 1000, 0);
 
   // Sector Data Transformation for clarity
   const processedSectorData = useMemo(() => {
@@ -183,6 +169,10 @@ export default function Dashboard() {
         risk_score: p.risk_score || 50,
         risk_category: p.risk_category || 'Low',
         delay_months: p.delay_months || 0,
+        sanctioned_cost: p.sanctioned_cost || 0,
+        actual_expenditure: p.actual_expenditure || 0,
+        cost_prob: Math.round((p.cost_overrun_probability || 0.15) * 100),
+        time_prob: Math.round((p.time_overrun_probability || 0.2) * 100),
         quadrant,
         quadrantLabel
       };
@@ -206,190 +196,356 @@ export default function Dashboard() {
     return counts;
   }, [scatterProjects]);
 
-  const allSectors = ['All', ...new Set(sectorStats.map(s => s.sector))];
+  // Priority Escalation Watchlist (Top 5 critical assets)
+  const priorityAssets = useMemo(() => {
+    return scatterProjects.slice(0, 5);
+  }, [scatterProjects]);
 
   return (
-    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="space-y-6 max-w-7xl mx-auto pb-12">
       
-      {/* SOVEREIGN INTELLIGENCE BANNER */}
-      <div className="glass-card p-4 sm:p-5 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-[rgba(61,58,52,0.1)] bg-[#FAF9F5]">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#1E1E1E] text-[#D97706] flex items-center justify-center shrink-0">
-            <Sparkles size={20} />
+      {/* 1. CLEAN EXECUTIVE HEADER */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[rgba(61,58,52,0.08)]">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="font-serif font-bold text-xl sm:text-2xl text-[#1B1C1A] tracking-tight">
+              Portfolio Overview
+            </h1>
+            <span className="badge-nominal text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full">
+              LIVE SURVEILLANCE
+            </span>
           </div>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-serif font-bold text-sm sm:text-base text-[#1B1C1A]">
-                MoSPI Modern Archive (2001–Present) Telemetry Activated
-              </h2>
-              <span className="badge-nominal text-[9px] sm:text-[10px] font-mono font-bold px-2 py-0.5 rounded-full">
-                276 Completed Reference Projects
-              </span>
-            </div>
-            <p className="text-[11px] text-[#655E4E] mt-0.5">
-              Empirical duration multipliers & 4-tier statutory Early Warning Alert System (EWAS) currently safeguarding ₹ 27.83 Lakh Cr across 1,484 active assets.
-            </p>
-          </div>
+          <p className="text-xs sm:text-sm text-[#655E4E] mt-0.5">
+            Predictive risk telemetry and prescriptive governance across 1,484 active capital projects.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0 self-end md:self-auto font-mono text-xs">
-          <Link
-            to="/benchmarks"
-            className="btn-sovereign-secondary px-3 py-1.5 text-xs font-semibold flex items-center gap-1"
+        {/* Action Pills */}
+        <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-welcome-video'))}
+            className="btn-sovereign-primary px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer group"
+            title="Watch AI Welcome & Walkthrough Video (20s)"
           >
-            <span>Module e: Benchmarks</span>
-            <ArrowUpRight size={12} />
+            <Play size={12} className="text-[#D97706] fill-[#D97706] group-hover:scale-110 transition-transform" />
+            <span>AI Briefing</span>
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/15 text-white">20s</span>
+          </button>
+          
+          <Link
+            to="/map"
+            className="btn-sovereign-secondary px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 hover:border-[#D97706] transition-colors"
+          >
+            <MapPin size={13} className="text-[#D97706]" />
+            <span>Map</span>
           </Link>
+
           <Link
-            to="/drivers"
-            className="btn-sovereign-primary px-3 py-1.5 text-xs font-semibold flex items-center gap-1 shadow-xs"
+            to="/projects"
+            className="btn-sovereign-secondary px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 hover:border-[#1E1E1E] transition-colors"
           >
-            <span>Module f: What-If</span>
-            <ArrowUpRight size={12} />
+            <Layers size={13} />
+            <span>Registry</span>
           </Link>
         </div>
       </div>
 
-      {/* SECTION 1 — KPI STRIP (STAGGERED FRAMER MOTION) */}
+      {/* 2. KPI METRICS STRIP (STAGGERED, CRISP, MINIMAL STRESS) */}
       <motion.div 
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
       >
         {/* KPI 1: Monitored Assets */}
-        <motion.div variants={itemVariants} className="glass-card p-5 rounded-2xl relative overflow-hidden group">
+        <motion.div variants={itemVariants} className="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group">
           <div className="flex items-center justify-between text-[#8D8574] text-xs font-semibold uppercase tracking-wider">
-            <span>Total Monitored Assets</span>
-            <div className="p-2 rounded-full bg-[#EFECE6] text-[#1E1E1E] border border-[rgba(61,58,52,0.1)]">
-              <Layers size={15} />
+            <span>Monitored Assets</span>
+            <div className="p-1.5 rounded-full bg-[#EFECE6] text-[#1E1E1E] border border-[rgba(61,58,52,0.1)]">
+              <Layers size={14} />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline gap-2">
+          <div className="mt-2.5 flex items-baseline gap-2">
             <span className="text-2xl sm:text-3xl font-extrabold font-mono text-[#1B1C1A] tracking-tight tabular-nums">
               {totalProjectsCount}
             </span>
-            <span className="badge-nominal text-[10px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full">
-              Live Registry
+            <span className="badge-nominal text-[10px] font-mono font-bold px-2 py-0.5 rounded-full">
+              Active
             </span>
           </div>
-          <p className="mt-2 text-xs text-[#655E4E]">
-            ₹ {((summary?.total_sanctioned_cost || 0) / 1000).toFixed(1)}k Cr Sanctioned Portfolio
+          <p className="mt-1 text-[11px] text-[#655E4E]">
+            ₹ {((summary?.total_sanctioned_cost || 0) / 1000).toFixed(1)}k Cr Sanctioned
           </p>
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#1E1E1E]" />
         </motion.div>
 
-        {/* KPI 2: High Risk Projects */}
-        <motion.div variants={itemVariants} className="glass-card p-5 rounded-2xl relative overflow-hidden group">
+        {/* KPI 2: Critical Risk */}
+        <motion.div variants={itemVariants} className="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group">
           <div className="flex items-center justify-between text-[#8D8574] text-xs font-semibold uppercase tracking-wider">
-            <span>Critical Risk Threshold</span>
-            <div className="p-2 rounded-full bg-[rgba(194,94,62,0.12)] text-[#C25E3E] border border-[rgba(194,94,62,0.22)]">
-              <ShieldAlert size={15} />
+            <span>Critical Risk</span>
+            <div className="p-1.5 rounded-full bg-[rgba(194,94,62,0.12)] text-[#C25E3E] border border-[rgba(194,94,62,0.22)]">
+              <ShieldAlert size={14} />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline gap-2">
+          <div className="mt-2.5 flex items-baseline gap-2">
             <span className="text-2xl sm:text-3xl font-extrabold font-mono text-[#C25E3E] tracking-tight tabular-nums">
               {highRiskCount}
             </span>
-            <span className="badge-sienna text-[10px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full">
-              Escalation Active
+            <span className="badge-sienna text-[10px] font-mono font-bold px-2 py-0.5 rounded-full">
+              Escalated
             </span>
           </div>
-          <p className="mt-2 text-xs text-[#655E4E]">
-            Score &ge; 65/100 under statutory review
+          <p className="mt-1 text-[11px] text-[#655E4E]">
+            Risk Score &ge; 65/100 under surveillance
           </p>
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#C25E3E]" />
         </motion.div>
 
-        {/* KPI 3: Avg Cost Escalation */}
-        <motion.div variants={itemVariants} className="glass-card p-5 rounded-2xl relative overflow-hidden group">
+        {/* KPI 3: Cost Drift */}
+        <motion.div variants={itemVariants} className="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group">
           <div className="flex items-center justify-between text-[#8D8574] text-xs font-semibold uppercase tracking-wider">
-            <span>Avg Cost Escalation</span>
-            <div className="p-2 rounded-full bg-[rgba(217,119,6,0.12)] text-[#D97706] border border-[rgba(217,119,6,0.22)]">
-              <TrendingUp size={15} />
+            <span>Cost Drift</span>
+            <div className="p-1.5 rounded-full bg-[rgba(217,119,6,0.12)] text-[#D97706] border border-[rgba(217,119,6,0.22)]">
+              <TrendingUp size={14} />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline gap-2">
+          <div className="mt-2.5 flex items-baseline gap-2">
             <span className="text-2xl sm:text-3xl font-extrabold font-mono text-[#D97706] tracking-tight tabular-nums">
               +{avgCostOverrun}%
             </span>
-            <span className="badge-amber text-[10px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full">
-              Fiscal Drift
+            <span className="badge-amber text-[10px] font-mono font-bold px-2 py-0.5 rounded-full">
+              Slippage
             </span>
           </div>
-          <p className="mt-2 text-xs text-[#655E4E]">
-            ₹ {((summary?.total_revised_cost - summary?.total_sanctioned_cost) || 0).toLocaleString()} Cr Overrun
+          <p className="mt-1 text-[11px] text-[#655E4E]">
+            Portfolio Average Escalation
           </p>
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#D97706]" />
         </motion.div>
 
         {/* KPI 4: On-Track Execution */}
-        <motion.div variants={itemVariants} className="glass-card p-5 rounded-2xl relative overflow-hidden group">
+        <motion.div variants={itemVariants} className="glass-card p-4 sm:p-5 rounded-2xl relative overflow-hidden group">
           <div className="flex items-center justify-between text-[#8D8574] text-xs font-semibold uppercase tracking-wider">
-            <span>On-Track Execution</span>
-            <div className="p-2 rounded-full bg-[rgba(74,93,78,0.12)] text-[#4A5D4E] border border-[rgba(74,93,78,0.22)]">
-              <CheckCircle2 size={15} />
+            <span>On-Track</span>
+            <div className="p-1.5 rounded-full bg-[rgba(74,93,78,0.12)] text-[#4A5D4E] border border-[rgba(74,93,78,0.22)]">
+              <CheckCircle2 size={14} />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline gap-2">
+          <div className="mt-2.5 flex items-baseline gap-2">
             <span className="text-2xl sm:text-3xl font-extrabold font-mono text-[#2D3A30] tracking-tight tabular-nums">
               {onTrackPct}%
             </span>
-            <span className="badge-nominal text-[10px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full">
-              Nominal Band
+            <span className="badge-nominal text-[10px] font-mono font-bold px-2 py-0.5 rounded-full">
+              Nominal
             </span>
           </div>
-          <p className="mt-2 text-xs text-[#655E4E]">
-            {summary?.low_risk_projects || 0} Assets within milestone budget
+          <p className="mt-1 text-[11px] text-[#655E4E]">
+            {summary?.low_risk_projects || 0} Assets within budget
           </p>
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#4A5D4E]" />
         </motion.div>
       </motion.div>
 
-      {/* SECTION 2 — GEOSPATIAL SURVEILLANCE MAP CALLOUT BANNER */}
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="glass-card p-4 sm:p-5 rounded-2xl border-l-4 border-l-[#D97706] relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-      >
-        <div className="flex items-start sm:items-center gap-3.5">
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[rgba(217,119,6,0.14)] border border-[rgba(217,119,6,0.3)] shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D97706] opacity-35" />
-            <MapPin size={20} className="text-[#D97706] relative z-10" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-serif font-bold text-sm sm:text-base text-[#1B1C1A]">
-                National Geospatial Surveillance Map
-              </h3>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#EFECE6] text-[#D97706] border border-[rgba(217,119,6,0.2)]">
-                LIVE TELEMETRY
-              </span>
+      {/* 3. SLEEK PRESCRIPTIVE DECISION RIBBON (NO WALL OF TEXT, CRISP ROI + COLLAPSIBLE DETAILS) */}
+      <div className="glass-card rounded-2xl p-4 sm:p-5 border border-[rgba(217,119,6,0.2)] bg-gradient-to-r from-[#FAF9F5] via-[#FAF9F5] to-[rgba(217,119,6,0.05)] shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          
+          {/* Prescriptive Value Proposition */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[rgba(217,119,6,0.12)] text-[#D97706] flex items-center justify-center shrink-0 border border-[rgba(217,119,6,0.25)]">
+              <BrainCircuit size={20} />
             </div>
-            <p className="text-xs text-[#655E4E] mt-0.5">
-              1,775 assets actively plotted across 31 Indian States with pulsating risk radars, district centroids, and live slippage HUD.
-            </p>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#D97706]">
+                  Prescriptive Governance Core
+                </span>
+                <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-[#EFECE6] text-[#655E4E]">
+                  Module f
+                </span>
+              </div>
+              <h2 className="font-serif font-bold text-sm sm:text-base text-[#1B1C1A]">
+                Evidence-Based Policy Interventions &amp; Recoverable ROI
+              </h2>
+            </div>
+          </div>
+
+          {/* Key Impact Stats + Action Button */}
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 self-start md:self-auto">
+            {/* Stat 1: Capital Preservable */}
+            <div className="px-3 py-1.5 rounded-xl bg-white/70 border border-[rgba(74,93,78,0.2)] text-left">
+              <div className="text-[9px] uppercase font-mono font-semibold text-[#4A5D4E]">Capital Preservable</div>
+              <div className="text-sm sm:text-base font-mono font-extrabold text-[#2D3A30]">
+                ₹ {nationalCapitalPreservable.toLocaleString()} Cr
+              </div>
+            </div>
+
+            {/* Stat 2: Delay Recoverable */}
+            <div className="px-3 py-1.5 rounded-xl bg-white/70 border border-[rgba(217,119,6,0.2)] text-left">
+              <div className="text-[9px] uppercase font-mono font-semibold text-[#D97706]">Delay Recoverable</div>
+              <div className="text-sm sm:text-base font-mono font-extrabold text-[#92400E]">
+                {nationalDelayRecoverable.toLocaleString()} Months
+              </div>
+            </div>
+
+            {/* Simulator Action Button */}
+            <Link
+              to="/drivers"
+              className="btn-sovereign-primary px-3.5 py-2 text-xs font-semibold flex items-center gap-1.5 shadow-xs"
+            >
+              <Sliders size={13} className="text-[#D97706]" />
+              <span>Strategy Simulator</span>
+              <ArrowUpRight size={13} />
+            </Link>
+
+            {/* Subtle Expand/Collapse Toggle */}
+            <button
+              onClick={() => setShowPrescriptiveDetails(!showPrescriptiveDetails)}
+              className="px-2.5 py-2 rounded-xl border border-[rgba(61,58,52,0.12)] bg-[#FAF9F5] hover:bg-[#EFECE6] text-xs font-mono text-[#655E4E] hover:text-[#1B1C1A] transition-colors flex items-center gap-1 cursor-pointer"
+              title={showPrescriptiveDetails ? 'Hide methodology details' : 'Show 3-tier governance and strategic levers'}
+            >
+              <span className="hidden sm:inline">{showPrescriptiveDetails ? 'Hide Details' : 'Governance Model'}</span>
+              {showPrescriptiveDetails ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
           </div>
         </div>
 
-        <Link
-          to="/map"
-          className="btn-sovereign-primary px-4 py-2 text-xs font-semibold flex items-center gap-2 shrink-0 shadow-md"
-        >
-          <span>Launch Surveillance Map</span>
-          <ArrowUpRight size={14} className="text-[#D97706]" />
-        </Link>
-      </motion.div>
+        {/* Collapsible Details Section (Tier 1 -> Tier 2 -> Tier 3 Progression & Strategic Levers) */}
+        <AnimatePresence>
+          {showPrescriptiveDetails && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mt-4 pt-4 border-t border-[rgba(61,58,52,0.08)] space-y-4 overflow-hidden"
+            >
+              {/* 3-Tier Pipeline Progression */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-xl bg-[rgba(239,236,230,0.5)] border border-[rgba(61,58,52,0.1)]">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[#8D8574] mb-1">
+                    <span className="font-bold uppercase">Tier 1: Descriptive</span>
+                    <span>Baseline</span>
+                  </div>
+                  <h4 className="font-serif text-xs font-bold text-[#1B1C1A] flex items-center gap-1">
+                    <BarChart2 size={13} className="text-[#655E4E]" />
+                    Operational Telemetry
+                  </h4>
+                  <p className="text-[11px] text-[#655E4E] mt-1 leading-relaxed">
+                    1,484 assets with monthly physical progress, cumulative expenditure, and GIS coordinates.
+                  </p>
+                </div>
 
-      {/* SECTION 3 — MAIN 60/40 SPLIT GRID WITH INTUITIVE GRAPHS */}
+                <div className="p-3.5 rounded-xl bg-[rgba(217,119,6,0.06)] border border-[rgba(217,119,6,0.22)]">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[#D97706] mb-1">
+                    <span className="font-bold uppercase">Tier 2: Predictive</span>
+                    <span>ROC-AUC 0.997</span>
+                  </div>
+                  <h4 className="font-serif text-xs font-bold text-[#1B1C1A] flex items-center gap-1">
+                    <BrainCircuit size={13} className="text-[#D97706]" />
+                    ML &amp; Root-Cause Attribution
+                  </h4>
+                  <p className="text-[11px] text-[#655E4E] mt-1 leading-relaxed">
+                    Dual XGBoost classifiers predict cost/schedule failure and isolate drivers using SHAP values.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[rgba(74,93,78,0.08)] border border-[rgba(74,93,78,0.25)]">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[#4A5D4E] mb-1">
+                    <span className="font-bold uppercase">Tier 3: Prescriptive</span>
+                    <span>Executive ROI</span>
+                  </div>
+                  <h4 className="font-serif text-xs font-bold text-[#1B1C1A] flex items-center gap-1">
+                    <Scale size={13} className="text-[#4A5D4E]" />
+                    Actionable Directives &amp; Memos
+                  </h4>
+                  <p className="text-[11px] text-[#655E4E] mt-1 leading-relaxed">
+                    Time-bound statutory orders, assigned authorities, and automated PMG memos with quantified savings.
+                  </p>
+                </div>
+              </div>
+
+              {/* 4 Strategic Levers Minimal Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
+                {(prescriptiveRadar?.strategic_prescriptive_levers || [
+                  {
+                    lever_id: 'LEV-1',
+                    name: 'Land RoW Special Collectorate Desk',
+                    category: 'Statutory Governance',
+                    affected_assets_count: 612,
+                    national_capital_preservable_cr: 6850,
+                    national_delay_recoverable_months: 540
+                  },
+                  {
+                    lever_id: 'LEV-2',
+                    name: 'Mandatory Design & Scope Freeze',
+                    category: 'Contractual Discipline',
+                    affected_assets_count: 480,
+                    national_capital_preservable_cr: 5420,
+                    national_delay_recoverable_months: 380
+                  },
+                  {
+                    lever_id: 'LEV-3',
+                    name: 'MoEFCC Forest Fast-Track Clearance',
+                    category: 'Regulatory Approval',
+                    affected_assets_count: 324,
+                    national_capital_preservable_cr: 3910,
+                    national_delay_recoverable_months: 310
+                  },
+                  {
+                    lever_id: 'LEV-4',
+                    name: 'Milestone-Gated Escrow Discipline',
+                    category: 'Fiscal Governance',
+                    affected_assets_count: 265,
+                    national_capital_preservable_cr: 2340,
+                    national_delay_recoverable_months: 160
+                  }
+                ]).map((lever) => (
+                  <div 
+                    key={lever.lever_id}
+                    className="p-3 rounded-xl bg-[#FAF9F5] border border-[rgba(61,58,52,0.12)] flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between text-[9px] font-mono text-[#8D8574]">
+                        <span>{lever.lever_id}</span>
+                        <span className="text-[#D97706] font-semibold">{lever.category}</span>
+                      </div>
+                      <h5 className="font-serif text-xs font-bold text-[#1B1C1A] mt-1 leading-snug">
+                        {lever.name}
+                      </h5>
+                      <div className="mt-2 text-[10px] font-mono space-y-0.5">
+                        <div className="flex justify-between text-[#4A5D4E]">
+                          <span>Capital:</span>
+                          <strong>₹ {lever.national_capital_preservable_cr.toLocaleString()} Cr</strong>
+                        </div>
+                        <div className="flex justify-between text-[#D97706]">
+                          <span>Delay:</span>
+                          <strong>{lever.national_delay_recoverable_months} Mo</strong>
+                        </div>
+                      </div>
+                    </div>
+                    <Link 
+                      to="/drivers" 
+                      className="mt-2 text-[10px] font-mono text-[#D97706] hover:underline font-bold flex items-center gap-0.5 justify-end"
+                    >
+                      Simulate &rarr;
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* 4. VISUAL TELEMETRY GRID (SECTOR CHART + SCATTER PLOT + ALERTS FEED + STATE LEADERBOARD) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* LEFT COLUMN (60% -> 7 Cols) */}
+        {/* LEFT COLUMN: INTERACTIVE VISUAL CHARTS (7 Cols) */}
         <div className="lg:col-span-7 space-y-6 min-w-0">
           
-          {/* Chart 1: Sector Risk Breakdown (Intuitive with View Modes & Editorial Insights) */}
+          {/* Chart 1: Sector Risk Breakdown */}
           <div className="glass-card p-5 sm:p-6 rounded-2xl">
-            {/* Header with View Mode Toggles */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
               <div>
                 <h2 className="font-serif text-base sm:text-lg font-bold text-[#1B1C1A] flex items-center gap-2">
@@ -426,26 +582,25 @@ export default function Dashboard() {
                     sectorViewMode === 'critical' ? 'bg-[#1E1E1E] text-[#FAF9F5] font-bold shadow-xs' : 'text-[#655E4E] hover:text-[#1B1C1A]'
                   }`}
                 >
-                  Critical First
+                  Critical
                 </button>
               </div>
             </div>
 
-            {/* Plain-English Insight Banner */}
-            <div className="mb-4 p-2.5 rounded-xl bg-[rgba(239,236,230,0.7)] border border-[rgba(61,58,52,0.08)] flex items-center justify-between text-xs">
+            {/* Quick Legend & Context */}
+            <div className="mb-4 p-2.5 rounded-xl bg-[rgba(239,236,230,0.7)] border border-[rgba(61,58,52,0.08)] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
               <span className="text-[#655E4E] flex items-center gap-1.5">
                 <span className="text-[#D97706] font-bold">●</span>
-                <span className="font-semibold text-[#1B1C1A]">Key Insight:</span> 
-                <span>Road Transport & Railways represent 68% of critical capital at risk.</span>
+                <span className="font-semibold text-[#1B1C1A]">Key Finding:</span> 
+                <span>Roadways &amp; Railways account for 68% of national risk volume.</span>
               </span>
-              <div className="flex items-center gap-2.5 text-[11px] font-mono font-medium shrink-0 ml-2">
+              <div className="flex items-center gap-2.5 text-[10px] sm:text-[11px] font-mono font-medium shrink-0">
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#C25E3E]" /> High</span>
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#D97706]" /> Med</span>
                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#4A5D4E]" /> Low</span>
               </div>
             </div>
 
-            {/* Bar Chart Container */}
             {/* Bar Chart Container */}
             <div className="w-full" style={{ height: 290, minHeight: 290 }}>
               {processedSectorData.length > 0 ? (
@@ -454,7 +609,7 @@ export default function Dashboard() {
                     key={`sector-chart-${sectorViewMode}`}
                     data={processedSectorData}
                     layout="vertical"
-                    margin={{ top: 5, right: 15, left: 10, bottom: 0 }}
+                    margin={{ top: 5, right: 15, left: 5, bottom: 0 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="rgba(61, 58, 52, 0.08)" />
                     <XAxis 
@@ -470,7 +625,8 @@ export default function Dashboard() {
                       dataKey="sector" 
                       stroke="#655E4E" 
                       fontSize={10} 
-                      width={130} 
+                      width={typeof window !== 'undefined' && window.innerWidth < 640 ? 80 : 130} 
+                      tickFormatter={(val) => (typeof window !== 'undefined' && window.innerWidth < 640 && val?.length > 10 ? val.substring(0, 9) + '..' : val)}
                       tickLine={false} 
                     />
                     <Tooltip 
@@ -480,7 +636,7 @@ export default function Dashboard() {
                         return (
                           <div className="glass-card p-3 rounded-xl text-xs space-y-1.5 shadow-xl border border-[rgba(61,58,52,0.14)] font-sans">
                             <p className="font-serif font-bold text-sm text-[#1B1C1A]">{d.sector}</p>
-                            <p className="text-[11px] text-[#8D8574]">Total Portfolio: {d.project_count || d.total} Assets</p>
+                            <p className="text-[11px] text-[#8D8574]">Total: {d.project_count || d.total} Assets</p>
                             <div className="border-t border-[rgba(61,58,52,0.08)] pt-1.5 space-y-1 font-mono text-[11px]">
                               <div className="flex items-center justify-between text-[#C25E3E]">
                                 <span>High Risk:</span>
@@ -491,7 +647,7 @@ export default function Dashboard() {
                                 <span className="font-bold">{d.medium_risk_count} ({d.medium_pct}%)</span>
                               </div>
                               <div className="flex items-center justify-between text-[#2D3A30]">
-                                <span>Nominal/Low:</span>
+                                <span>Low/Nominal:</span>
                                 <span className="font-bold">{d.low_risk_count} ({d.low_pct}%)</span>
                               </div>
                             </div>
@@ -528,9 +684,8 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Chart 2: Cost vs Schedule Slippage (Crystal Clear 4-Quadrant Scatter Plot) */}
+          {/* Chart 2: Cost vs Schedule Slippage (4-Quadrant Scatter Plot) */}
           <div className="monolith-card p-5 sm:p-6 rounded-2xl relative overflow-hidden">
-            {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
               <div>
                 <h2 className="font-serif text-base sm:text-lg font-bold text-[#FAF9F5] flex items-center gap-2">
@@ -565,7 +720,7 @@ export default function Dashboard() {
                     : 'bg-[#C25E3E]/20 text-[#C25E3E] hover:bg-[#C25E3E]/30'
                 }`}
               >
-                <span>🔴 Compound Crisis ({quadrantCounts.compound})</span>
+                <span>🔴 Compound ({quadrantCounts.compound})</span>
               </button>
               <button
                 onClick={() => setScatterQuadrant('schedule')}
@@ -575,7 +730,7 @@ export default function Dashboard() {
                     : 'bg-[#D97706]/20 text-[#D97706] hover:bg-[#D97706]/30'
                 }`}
               >
-                <span>🟡 Stalled Timeline ({quadrantCounts.schedule})</span>
+                <span>🟡 Delay Only ({quadrantCounts.schedule})</span>
               </button>
               <button
                 onClick={() => setScatterQuadrant('fiscal')}
@@ -585,7 +740,7 @@ export default function Dashboard() {
                     : 'bg-[#E0A96D]/20 text-[#E0A96D] hover:bg-[#E0A96D]/30'
                 }`}
               >
-                <span>🟠 Budget Drift ({quadrantCounts.fiscal})</span>
+                <span>🟠 Cost Drift ({quadrantCounts.fiscal})</span>
               </button>
               <button
                 onClick={() => setScatterQuadrant('nominal')}
@@ -624,9 +779,8 @@ export default function Dashboard() {
                   />
                   <ZAxis type="number" dataKey="risk_score" range={[40, 160]} />
 
-                  {/* Clear Quadrant Threshold Guideline Lines */}
-                  <ReferenceLine x={10} stroke="#D97706" strokeDasharray="4 4" strokeOpacity={0.5} label={{ value: 'Cost Threshold', fill: '#D97706', fontSize: 9, position: 'insideTopRight' }} />
-                  <ReferenceLine y={15} stroke="#C25E3E" strokeDasharray="4 4" strokeOpacity={0.5} label={{ value: 'Schedule Threshold', fill: '#C25E3E', fontSize: 9, position: 'insideBottomLeft' }} />
+                  <ReferenceLine x={10} stroke="#D97706" strokeDasharray="4 4" strokeOpacity={0.5} label={{ value: 'Cost +10%', fill: '#D97706', fontSize: 9, position: 'insideTopRight' }} />
+                  <ReferenceLine y={15} stroke="#C25E3E" strokeDasharray="4 4" strokeOpacity={0.5} label={{ value: 'Delay +15%', fill: '#C25E3E', fontSize: 9, position: 'insideBottomLeft' }} />
 
                   <Tooltip 
                     cursor={{ strokeDasharray: '3 3' }}
@@ -675,15 +829,10 @@ export default function Dashboard() {
                 </ScatterChart>
               </ResponsiveContainer>
             </div>
-
-            {/* Bottom Guidance Note */}
-            <div className="mt-2 text-[11px] text-[#A39D8F] font-sans flex items-center justify-between border-t border-white/10 pt-2">
-              <span>👉 Top-right dots represent dual delay and budget failure. Click chips above to isolate.</span>
-            </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN (40% -> 5 Cols) */}
+        {/* RIGHT COLUMN: SURVEILLANCE FEED & STATE LEADERBOARD (5 Cols) */}
         <div className="lg:col-span-5 space-y-6 min-w-0">
           
           {/* Live Surveillance Feed */}
@@ -691,10 +840,10 @@ export default function Dashboard() {
             <div className="flex items-center justify-between pb-3 border-b border-[rgba(61,58,52,0.08)]">
               <div className="flex items-center gap-2">
                 <ShieldAlert size={16} className="text-[#C25E3E]" />
-                <h2 className="font-serif text-base font-bold text-[#1B1C1A]">Surveillance Feed</h2>
+                <h2 className="font-serif text-base font-bold text-[#1B1C1A]">Surveillance Alerts</h2>
               </div>
               <Link to="/alerts" className="text-xs font-mono text-[#D97706] hover:text-[#1B1C1A] font-semibold flex items-center gap-1 transition-colors">
-                View All <ArrowUpRight size={12} />
+                All Alerts <ArrowUpRight size={12} />
               </Link>
             </div>
 
@@ -736,7 +885,13 @@ export default function Dashboard() {
 
           {/* State Performance Leaderboard */}
           <div className="glass-card p-5 rounded-2xl space-y-4">
-            <h2 className="font-serif text-base font-bold text-[#1B1C1A]">State Risk Leaderboard</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="font-serif text-base font-bold text-[#1B1C1A]">State Risk Leaderboard</h2>
+              <Link to="/map" className="text-xs font-mono text-[#D97706] hover:underline flex items-center gap-0.5">
+                <span>View Map</span> &rarr;
+              </Link>
+            </div>
+            
             <div className="space-y-3">
               <div>
                 <span className="text-[10px] font-bold text-[#C25E3E] uppercase tracking-wider block mb-1.5">
@@ -780,116 +935,98 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* SECTION 4 — FILTERABLE PROJECTS TABLE */}
-      <div className="glass-card rounded-2xl p-5 sm:p-7 space-y-4">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      {/* 5. FOCUSED PRIORITY ESCALATION WATCHLIST (REPLACING REDUNDANT CROWDED TABLE) */}
+      <div className="glass-card rounded-2xl p-5 sm:p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[rgba(61,58,52,0.08)]">
           <div>
-            <h2 className="font-serif text-base sm:text-lg font-bold text-[#1B1C1A]">Monitored Projects Catalog</h2>
-            <p className="text-xs text-[#8D8574]">Total {projectsData.total} infrastructure packages registered under CUF surveillance</p>
+            <div className="flex items-center gap-2">
+              <h2 className="font-serif text-base sm:text-lg font-bold text-[#1B1C1A]">
+                Priority Escalation Watchlist
+              </h2>
+              <span className="badge-sienna text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full">
+                TOP 5 UNDER SURVEILLANCE
+              </span>
+            </div>
+            <p className="text-xs text-[#8D8574] mt-0.5">
+              Immediate statutory intervention candidates ranked by empirical risk score.
+            </p>
           </div>
 
-          {/* Filter Controls with Pill Geometries */}
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Search */}
-            <div className="relative flex-1 sm:flex-none">
-              <Search size={14} className="absolute left-3.5 top-2.5 text-[#8D8574]" />
-              <input
-                type="text"
-                placeholder="Search project, state..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-56 bg-[#FAF9F5] border border-[rgba(61,58,52,0.14)] text-xs text-[#1B1C1A] pl-9 pr-3.5 py-2 rounded-full focus:outline-none focus:border-[#1E1E1E] transition-colors"
-              />
-            </div>
-
-            {/* Sector Dropdown */}
-            <select
-              value={sectorFilter}
-              onChange={(e) => setSectorFilter(e.target.value)}
-              className="bg-[#FAF9F5] border border-[rgba(61,58,52,0.14)] text-xs text-[#3D3A34] px-3.5 py-2 rounded-full focus:outline-none focus:border-[#1E1E1E] font-medium max-w-[170px] truncate transition-colors"
-            >
-              {allSectors.map(sec => (
-                <option key={sec} value={sec}>{sec}</option>
-              ))}
-            </select>
-
-            {/* Risk Pills */}
-            <div className="flex rounded-full bg-[#EFECE6] border border-[rgba(61,58,52,0.1)] p-0.5">
-              {['All', 'High', 'Medium', 'Low'].map(r => (
-                <button
-                  key={r}
-                  onClick={() => setRiskFilter(r)}
-                  className={`px-3 py-1 text-xs font-mono rounded-full transition-all ${
-                    riskFilter === r ? 'bg-[#1E1E1E] text-[#FAF9F5] font-bold shadow-xs' : 'text-[#655E4E] hover:text-[#1B1C1A]'
-                  }`}
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
-          </div>
+          <Link
+            to="/projects"
+            className="btn-sovereign-primary px-4 py-2 text-xs font-semibold inline-flex items-center gap-1.5 shadow-xs shrink-0 self-start sm:self-auto"
+          >
+            <span>Open Complete Registry ({totalProjectsCount})</span>
+            <ArrowUpRight size={13} />
+          </Link>
         </div>
 
-        {/* Responsive Table Content */}
-        <div className="overflow-x-auto -mx-5 sm:mx-0">
-          <table className="w-full text-left text-xs min-w-[640px] sm:min-w-full">
-            <thead className="bg-[#FAF9F5]/80 text-[#655E4E] uppercase font-semibold border-b border-[rgba(61,58,52,0.08)]">
-              <tr>
-                <th className="py-3 px-4">Project ID & Title</th>
-                <th className="py-3 px-4">Sector & State</th>
-                <th className="py-3 px-4">Sanctioned</th>
-                <th className="py-3 px-4">Risk Index</th>
-                <th className="py-3 px-4">Overrun Probs</th>
-                <th className="py-3 px-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[rgba(61,58,52,0.06)] font-mono">
-              {(projectsData.projects || []).map((proj) => (
-                <tr key={proj.project_id} className="hover:bg-[rgba(239,236,230,0.5)] transition-colors">
-                  <td className="py-3.5 px-4 font-sans max-w-[220px]">
-                    <div className="font-bold text-[#1B1C1A] truncate">{proj.project_name}</div>
-                    <div className="text-[10px] font-mono text-[#8D8574] mt-0.5 font-medium">{proj.project_id}</div>
-                  </td>
-                  <td className="py-3.5 px-4 font-sans">
-                    <div className="text-[#1B1C1A] font-medium truncate max-w-[130px]">{proj.sector}</div>
-                    <div className="text-[10px] text-[#8D8574]">{proj.state}</div>
-                  </td>
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <div className="text-[#1B1C1A] font-bold tabular-nums">₹ {proj.sanctioned_cost} Cr</div>
-                    <div className="text-[10px] text-[#8D8574] tabular-nums">Exp: {proj.actual_expenditure} Cr</div>
-                  </td>
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <div className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full font-bold text-xs ${
-                      proj.risk_score >= 65 ? 'badge-sienna' :
-                      proj.risk_score >= 35 ? 'badge-amber' :
-                      'badge-nominal'
-                    }`}>
-                      {proj.risk_score}
-                    </div>
-                  </td>
-                  <td className="py-3.5 px-4 whitespace-nowrap">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1.5 text-[10px]">
-                        <span className="text-[#D97706] font-semibold tabular-nums">Cost: {Math.round((proj.cost_overrun_probability || 0.15) * 100)}%</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-[10px]">
-                        <span className="text-[#2C3E50] font-semibold tabular-nums">Time: {Math.round((proj.time_overrun_probability || 0.2) * 100)}%</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
-                    <Link
-                      to={`/projects/${proj.project_id}`}
-                      className="btn-sovereign-secondary inline-flex items-center gap-1.5 px-3 py-1 text-xs font-sans font-semibold transition-all"
-                    >
-                      <span>Inspect</span>
-                      <ExternalLink size={11} />
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {/* Priority Assets Clean List Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+          {priorityAssets.map((proj, idx) => (
+            <div 
+              key={proj.project_id || idx}
+              className="p-3.5 rounded-xl bg-[#FAF9F5] border border-[rgba(61,58,52,0.12)] hover:border-[#D97706] transition-all flex flex-col justify-between group shadow-2xs"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="badge-sienna text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full">
+                    Risk {proj.risk_score}/100
+                  </span>
+                  <span className="text-[10px] font-mono text-[#8D8574]">
+                    #{idx + 1}
+                  </span>
+                </div>
+
+                <Link 
+                  to={`/projects/${proj.project_id}`}
+                  className="font-serif text-xs font-bold text-[#1B1C1A] group-hover:text-[#D97706] line-clamp-2 transition-colors"
+                  title={proj.project_name}
+                >
+                  {proj.project_name}
+                </Link>
+
+                <div className="mt-2 text-[11px] font-mono text-[#655E4E] space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="truncate max-w-[90px]">{proj.sector}</span>
+                    <span className="text-[#8D8574] truncate max-w-[70px]">{proj.state}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[#C25E3E]">
+                    <span>Cost Overrun:</span>
+                    <strong>+{proj.cost_overrun_pct || 0}%</strong>
+                  </div>
+                  <div className="flex items-center justify-between text-[#D97706]">
+                    <span>Time Delay:</span>
+                    <strong>+{proj.time_overrun_pct || 0}%</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3 pt-2.5 border-t border-[rgba(61,58,52,0.08)] flex items-center justify-between text-[11px] font-mono">
+                <span className="text-[#8D8574]">₹ {proj.sanctioned_cost} Cr</span>
+                <Link
+                  to={`/projects/${proj.project_id}`}
+                  className="text-[#D97706] font-bold hover:underline flex items-center gap-0.5"
+                >
+                  <span>Inspect</span>
+                  <ChevronRight size={12} />
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom Banner to Complete Registry */}
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#8D8574]">
+          <span className="font-mono">
+            Looking for search, state filters, or full tabular reports?
+          </span>
+          <Link
+            to="/projects"
+            className="text-[#D97706] hover:text-[#1B1C1A] font-bold flex items-center gap-1 transition-colors font-mono"
+          >
+            <span>Launch Complete Projects Registry (1,484 Assets) &rarr;</span>
+          </Link>
         </div>
       </div>
     </div>

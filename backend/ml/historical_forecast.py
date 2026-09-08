@@ -164,7 +164,9 @@ def predict_project_overruns(project: dict) -> dict:
 
     # Historical velocity adjusted for project friction
     base_velocity = sec_bm['completion_velocity_pct_month']
-    adjusted_velocity = max(0.6, base_velocity / friction) # % work finished per month
+    velocity_boost = float(project.get('velocity_boost_pct') or 0.0)
+    boost_factor = 1.0 + (velocity_boost / 100.0)
+    adjusted_velocity = max(0.6, (base_velocity / friction) * boost_factor) # % work finished per month
 
     remaining_work_pct = max(0.0, 100.0 - phy_prog)
     predicted_remaining_months = int(math.ceil(remaining_work_pct / adjusted_velocity))
@@ -178,13 +180,26 @@ def predict_project_overruns(project: dict) -> dict:
     predicted_time_overrun_pct = round((predicted_delay_months / max(1, s_dur)) * 100.0, 1)
 
     # Cost Overrun Prediction:
-    # Based on historical sector drift + project specific budget pressure
+    # Based on historical sector drift + project specific budget pressure + time-linked IDC overhead
     cost_base_drift = sec_bm['avg_cost_overrun_pct'] / 100.0
-    cost_risk_multiplier = 1.0 + (rev_count * 0.08) + (0.10 if land_status != 'Complete' else 0.0)
+    cost_risk_multiplier = 1.0 + (rev_count * 0.08) + (0.10 if land_status != 'Complete' else 0.0) + (0.06 if disputes > 0 else 0.0)
     
-    # Existing revision inflation
+    # Existing revision inflation with mitigation allowance
     existing_inflation = max(0.0, (r_cost - s_cost) / max(1.0, s_cost))
+    if project.get('scope_freeze'):
+        existing_inflation *= 0.60 # Freezing scope halts 40% of downstream uncommitted contract inflation
+    elif rev_count == 0 and int(project.get('original_revision_count') or 0) > 0:
+        existing_inflation *= 0.72
+        
     predicted_cost_drift_rate = max(existing_inflation, cost_base_drift * cost_risk_multiplier)
+    
+    # MoSPI IDC & contractor idle establishment drag: 0.22% per month of delay
+    idc_overhead_drag = (predicted_delay_months * 0.0022)
+    predicted_cost_drift_rate += idc_overhead_drag
+
+    if velocity_boost > 0:
+        # Accelerated progress shortens financing drag
+        predicted_cost_drift_rate *= max(0.55, 1.0 - (velocity_boost * 0.004))
     
     predicted_final_cost = round(s_cost * (1.0 + predicted_cost_drift_rate), 2)
     predicted_cost_overrun_cr = round(max(0.0, predicted_final_cost - s_cost), 2)
@@ -307,6 +322,7 @@ def simulate_project_intervention(base_project: dict, adjustments: dict) -> dict
 
     # 2. Cloned project with adjustments
     simulated_project = dict(base_project)
+    simulated_project['original_revision_count'] = base_project.get('revision_count', 0)
     for k, v in adjustments.items():
         simulated_project[k] = v
 
@@ -317,26 +333,51 @@ def simulate_project_intervention(base_project: dict, adjustments: dict) -> dict
     cost_saved_cr = max(0.0, round(base_pred['predicted_cost_overrun_cr'] - sim_pred['predicted_cost_overrun_cr'], 2))
     cost_pct_reduction = max(0.0, round(base_pred['predicted_cost_overrun_pct'] - sim_pred['predicted_cost_overrun_pct'], 1))
 
+    # Dynamic recommendation formulation
+    actions = []
+    if adjustments.get('land_acquisition_status') == 'Complete' and base_project.get('land_acquisition_status') != 'Complete':
+        actions.append("100% Land Acquisition Handover")
+    if adjustments.get('environment_clearance') == 'Cleared' and base_project.get('environment_clearance') != 'Cleared':
+        actions.append("Statutory Environmental NOC")
+    if adjustments.get('forest_clearance') == 'Cleared' and base_project.get('forest_clearance') != 'Cleared':
+        actions.append("Forest Stage-II Clearance")
+    if adjustments.get('scope_freeze') or (adjustments.get('revision_count') == 0 and base_project.get('revision_count', 0) > 0):
+        actions.append("Design Scope Freeze")
+    if adjustments.get('disputes_count') == 0 and base_project.get('disputes_count', 0) > 0:
+        actions.append("Contractor Dispute Settlement")
+    if float(adjustments.get('velocity_boost_pct') or 0) > 0:
+        actions.append(f"+{adjustments.get('velocity_boost_pct')}% Multi-Shift Velocity Injection")
+
+    action_text = ", ".join(actions) if actions else "Strategic Targeted Mitigation"
+
     return {
         'project_id': base_project.get('project_id'),
         'project_name': base_project.get('project_name'),
+        'sector': base_project.get('sector'),
+        'sanctioned_cost_cr': base_project.get('sanctioned_cost'),
         'adjustments_applied': adjustments,
         'baseline': {
             'predicted_delay_months': base_pred['predicted_delay_months'],
             'predicted_cost_overrun_pct': base_pred['predicted_cost_overrun_pct'],
+            'predicted_cost_overrun_cr': base_pred['predicted_cost_overrun_cr'],
             'predicted_final_cost_cr': base_pred['predicted_final_cost_cr'],
-            'completion_date': base_pred['predicted_completion_date']
+            'completion_date': base_pred['predicted_completion_date'],
+            'predicted_remaining_months': base_pred['predicted_remaining_months'],
+            'peer_velocity_index': base_pred['peer_velocity_index']
         },
         'simulated': {
             'predicted_delay_months': sim_pred['predicted_delay_months'],
             'predicted_cost_overrun_pct': sim_pred['predicted_cost_overrun_pct'],
+            'predicted_cost_overrun_cr': sim_pred['predicted_cost_overrun_cr'],
             'predicted_final_cost_cr': sim_pred['predicted_final_cost_cr'],
-            'completion_date': sim_pred['predicted_completion_date']
+            'completion_date': sim_pred['predicted_completion_date'],
+            'predicted_remaining_months': sim_pred['predicted_remaining_months'],
+            'peer_velocity_index': sim_pred['peer_velocity_index']
         },
         'impact_summary': {
             'delay_saved_months': delay_saved_months,
             'cost_saved_cr': cost_saved_cr,
             'cost_pct_reduction': cost_pct_reduction,
-            'recommendation': f"Resolving {', '.join(adjustments.keys())} recovers {delay_saved_months} months and avoids ₹ {cost_saved_cr} Cr in cost inflation."
+            'recommendation': f"Enacting {action_text} recovers {delay_saved_months} months of critical path delay and preserves ₹ {cost_saved_cr:,.2f} Cr in capital overrun."
         }
     }

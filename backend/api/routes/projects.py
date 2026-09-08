@@ -13,6 +13,10 @@ from ml.historical_forecast import (
     get_cost_drivers,
     simulate_project_intervention
 )
+from ml.prescriptive_engine import (
+    generate_project_prescriptions,
+    generate_portfolio_prescriptive_radar
+)
 from pydantic import BaseModel
 from typing import Dict, Any
 
@@ -239,3 +243,15 @@ def get_historical_completion_stats():
 @router.get("/stats/drivers")
 def get_cost_driver_stats():
     return get_cost_drivers()
+
+@router.get("/projects/{project_id}/prescriptions")
+def get_project_prescriptions_route(project_id: str, db: Session = Depends(get_db)):
+    p = db.query(Project).filter(Project.project_id == project_id).first()
+    if not p:
+        raise HTTPException(status_code=404, detail="Project not found")
+    p_dict = {c.name: getattr(p, c.name) for c in Project.__table__.columns}
+    return generate_project_prescriptions(p_dict)
+
+@router.get("/stats/prescriptive-radar")
+def get_prescriptive_radar(db: Session = Depends(get_db)):
+    return generate_portfolio_prescriptive_radar(db)

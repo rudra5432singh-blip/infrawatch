@@ -171,33 +171,34 @@ export default function Alerts() {
       </div>
 
       {/* FILTER & ACTIONS BAR */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Tier Toggles */}
-        <div className="flex flex-wrap gap-1.5 p-1 rounded-2xl bg-[#EFECE6] border border-[rgba(61,58,52,0.1)]">
+        <div className="flex flex-wrap gap-1 p-1 rounded-2xl bg-[#EFECE6] border border-[rgba(61,58,52,0.1)]">
           {[
-            { id: 'All', label: 'All Active Tiers' },
-            { id: 'Level 1', label: 'Level 1: Critical (Cabinet/PMG)' },
-            { id: 'Level 2', label: 'Level 2: High (Inter-Min)' },
-            { id: 'Level 3', label: 'Level 3: Moderate (Agency Board)' },
-            { id: 'Level 4', label: 'Level 4: Advisory (Project Dir)' },
+            { id: 'All', label: 'All Active Tiers', shortLabel: 'All' },
+            { id: 'Level 1', label: 'Level 1: Critical (Cabinet/PMG)', shortLabel: 'L1: Cabinet' },
+            { id: 'Level 2', label: 'Level 2: High (Inter-Min)', shortLabel: 'L2: High' },
+            { id: 'Level 3', label: 'Level 3: Moderate (Agency Board)', shortLabel: 'L3: Board' },
+            { id: 'Level 4', label: 'Level 4: Advisory (Project Dir)', shortLabel: 'L4: Advisory' },
           ].map(t => (
             <button
               key={t.id}
               onClick={() => setTierFilter(t.id)}
-              className={`px-3 py-1.5 text-xs font-mono rounded-xl transition-all cursor-pointer ${
+              className={`px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-mono rounded-xl transition-all cursor-pointer ${
                 tierFilter === t.id 
                   ? 'bg-[#1E1E1E] text-[#FAF9F5] font-bold shadow-xs' 
                   : 'text-[#655E4E] hover:text-[#1B1C1A]'
               }`}
             >
-              {t.label}
+              <span className="hidden sm:inline">{t.label}</span>
+              <span className="sm:hidden">{t.shortLabel}</span>
             </button>
           ))}
         </div>
 
         <button
           onClick={handleResolveAll}
-          className="btn-sovereign-secondary px-4 py-2 text-xs font-semibold flex items-center gap-1.5 hover:bg-[#4A5D4E] hover:text-white hover:border-[#4A5D4E] transition-all cursor-pointer"
+          className="btn-sovereign-secondary w-full sm:w-auto px-4 py-2 text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-[#4A5D4E] hover:text-white hover:border-[#4A5D4E] transition-all cursor-pointer"
         >
           <CheckCheck size={14} />
           <span>Acknowledge All</span>

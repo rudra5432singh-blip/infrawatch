@@ -14,7 +14,18 @@ import {
   CheckCircle,
   HelpCircle,
   TrendingUp,
-  Sliders
+  Sliders,
+  Compass,
+  Shield,
+  FileCheck,
+  Scale,
+  Printer,
+  Download,
+  X,
+  ExternalLink,
+  Award,
+  ArrowUpRight,
+  Zap
 } from 'lucide-react';
 import { 
   getProjectDetail, 
@@ -22,7 +33,8 @@ import {
   runProjectExplain, 
   getAlerts, 
   resolveAlert,
-  getProjectForecast 
+  getProjectForecast,
+  getProjectPrescriptions 
 } from '../utils/api';
 
 export default function ProjectDetail() {
@@ -31,6 +43,8 @@ export default function ProjectDetail() {
   const [predictions, setPredictions] = useState(null);
   const [shapData, setShapData] = useState(null);
   const [forecast, setForecast] = useState(null);
+  const [prescriptionsData, setPrescriptionsData] = useState(null);
+  const [showMemoModal, setShowMemoModal] = useState(false);
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
@@ -39,17 +53,19 @@ export default function ProjectDetail() {
     async function loadProject() {
       try {
         setLoading(true);
-        const [projRes, predRes, shapRes, alRes, fcRes] = await Promise.all([
+        const [projRes, predRes, shapRes, alRes, fcRes, rxRes] = await Promise.all([
           getProjectDetail(id),
           runProjectPredict(id),
           runProjectExplain(id),
           getAlerts({ limit: 20 }),
-          getProjectForecast(id).catch(() => null)
+          getProjectForecast(id).catch(() => null),
+          getProjectPrescriptions(id).catch(() => null)
         ]);
         setProject(projRes);
         setPredictions(predRes.predictions);
         setShapData(shapRes.explanation);
         setForecast(fcRes);
+        setPrescriptionsData(rxRes);
         
         const projAlerts = (alRes.alerts || []).filter(a => a.project_id === id);
         setAlerts(projAlerts);
@@ -65,12 +81,14 @@ export default function ProjectDetail() {
   const handleRunAnalysis = async () => {
     setAnalyzing(true);
     try {
-      const [predRes, shapRes] = await Promise.all([
+      const [predRes, shapRes, rxRes] = await Promise.all([
         runProjectPredict(id),
-        runProjectExplain(id)
+        runProjectExplain(id),
+        getProjectPrescriptions(id).catch(() => null)
       ]);
       setPredictions(predRes.predictions);
       setShapData(shapRes.explanation);
+      if (rxRes) setPrescriptionsData(rxRes);
     } catch (err) {
       console.error('Analysis failed:', err);
     } finally {
@@ -434,6 +452,264 @@ export default function ProjectDetail() {
           </div>
         </div>
       </div>
+
+      {/* TIER 3: PRESCRIPTIVE DECISION-SUPPORT HUB */}
+      {prescriptionsData && (
+        <div className="glass-card p-6 sm:p-8 rounded-2xl space-y-6 border-2 border-[rgba(217,119,6,0.25)] shadow-sm">
+          {/* Paradigm Evolution Stepper */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-[rgba(61,58,52,0.08)]">
+            <div className="space-y-1.5 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1E1E1E] text-[#FAF9F5] text-[11px] font-mono font-semibold">
+                <Compass size={13} className="text-[#D97706]" />
+                <span>Tier 3: Prescriptive Decision-Support Engine</span>
+              </div>
+              <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#1B1C1A] tracking-tight">
+                Evidence-Based Administrative Prescriptions
+              </h2>
+              <p className="text-xs sm:text-sm text-[#655E4E] leading-relaxed">
+                Transforming predictive failure indicators into ranked, evidence-based policy directives with quantified schedule recovery and capital preservation ROI.
+              </p>
+            </div>
+
+            {/* Combined Impact & Action Buttons */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="p-3 rounded-xl bg-[#FAF9F5] border border-[rgba(61,58,52,0.1)] text-right font-mono text-xs">
+                <span className="text-[10px] text-[#8D8574] block uppercase">Strategic Recovery Potential</span>
+                <span className="text-sm sm:text-base font-bold text-[#4A5D4E]">
+                  -{prescriptionsData.combined_impact.total_delay_recovered_months} Mo
+                </span>
+                <span className="text-xs text-[#D97706] font-bold ml-2">
+                  ₹ {prescriptionsData.combined_impact.total_capital_preserved_cr} Cr
+                </span>
+              </div>
+
+              <button
+                onClick={() => setShowMemoModal(true)}
+                className="btn-sovereign-primary px-4 py-2.5 text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-md"
+              >
+                <FileCheck size={14} className="text-[#D97706]" />
+                <span>Generate Executive Decision Memo</span>
+              </button>
+
+              <Link
+                to="/drivers"
+                className="btn-sovereign-secondary px-3.5 py-2.5 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              >
+                <Sliders size={13} />
+                <span>Test in What-If Simulator</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Three-Tier Pipeline Stepper Badge */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
+            <div className="p-3 rounded-xl bg-[#FAF9F5] border border-[rgba(61,58,52,0.08)] space-y-1">
+              <span className="text-[10px] uppercase text-[#8D8574] font-bold block">1. Descriptive Telemetry</span>
+              <span className="text-[#1B1C1A] font-semibold block">Ground Physical & Fiscal Progress</span>
+              <span className="text-[10px] text-[#655E4E] block">Physical: {project.physical_progress}% | Financial: {project.financial_progress}%</span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-[#FAF9F5] border border-[rgba(61,58,52,0.08)] space-y-1">
+              <span className="text-[10px] uppercase text-[#8D8574] font-bold block">2. Predictive Intelligence</span>
+              <span className="text-[#C25E3E] font-semibold block">Forecasted Trajectory & SHAP Drivers</span>
+              <span className="text-[10px] text-[#655E4E] block">Delay: +{prescriptionsData.current_status.predicted_delay_months} Mo | Overrun: +{prescriptionsData.current_status.predicted_cost_overrun_pct}%</span>
+            </div>
+
+            <div className="p-3 rounded-xl bg-[#1E1E1E] text-[#FAF9F5] border border-white/10 space-y-1 shadow-sm">
+              <span className="text-[10px] uppercase text-[#D97706] font-bold block">3. Prescriptive Decision Support</span>
+              <span className="text-white font-semibold block">{prescriptionsData.prescriptions.length} Targeted Administrative Prescriptions</span>
+              <span className="text-[10px] text-[#EFECE6] block">Actionable statutory & contractual directives</span>
+            </div>
+          </div>
+
+          {/* Ranked Prescriptions Grid */}
+          <div className="space-y-4">
+            {prescriptionsData.prescriptions.map((rx) => (
+              <div 
+                key={rx.id}
+                className="p-4 sm:p-5 rounded-xl bg-[#FAF9F5]/90 border border-[rgba(61,58,52,0.12)] space-y-3 transition-all hover:border-[#1E1E1E]"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-full bg-[#1E1E1E] text-[#FAF9F5] font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                      {rx.rank}
+                    </span>
+                    <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full uppercase ${
+                      rx.priority.includes('Critical') ? 'badge-sienna' :
+                      rx.priority.includes('High') ? 'badge-amber' :
+                      'badge-indigo'
+                    }`}>
+                      {rx.priority}
+                    </span>
+                    <span className="text-[10px] font-mono text-[#8D8574] bg-[#EFECE6] px-2 py-0.5 rounded-md">
+                      {rx.action_type}
+                    </span>
+                  </div>
+
+                  {/* Quantified Impact Pills */}
+                  <div className="flex items-center gap-3 font-mono text-xs tabular-nums">
+                    <span className="font-bold text-[#4A5D4E] bg-[#4A5D4E]/10 px-2.5 py-0.5 rounded-full border border-[#4A5D4E]/20">
+                      -{rx.expected_delay_recovered_months} Months Recovered
+                    </span>
+                    <span className="font-bold text-[#D97706] bg-[#D97706]/10 px-2.5 py-0.5 rounded-full border border-[#D97706]/20">
+                      ₹ {rx.expected_capital_preserved_cr} Cr Preserved
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <h3 className="font-serif text-sm sm:text-base font-bold text-[#1B1C1A]">
+                    {rx.title}
+                  </h3>
+                  <p className="text-xs text-[#3D3A34] leading-relaxed bg-white/70 p-3 rounded-lg border border-[rgba(61,58,52,0.06)] font-sans">
+                    <strong className="text-[#1B1C1A]">Operative Order: </strong>
+                    {rx.decision_order}
+                  </p>
+                </div>
+
+                {/* Authority & Evidence Strip */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-[11px] font-mono pt-1 text-[#655E4E]">
+                  <div>
+                    <span className="text-[#8D8574] text-[10px] uppercase block">Designated Authority:</span>
+                    <span className="font-semibold text-[#1B1C1A]">{rx.responsible_authority}</span>
+                  </div>
+                  <div>
+                    <span className="text-[#8D8574] text-[10px] uppercase block">Statutory Reference:</span>
+                    <span className="text-[#2C3E50]">{rx.statutory_reference}</span>
+                  </div>
+                  <div>
+                    <span className="text-[#8D8574] text-[10px] uppercase block">Compliance Lead Time:</span>
+                    <span className="font-semibold text-[#D97706]">{rx.timeline_days} Calendar Days</span>
+                  </div>
+                </div>
+
+                <div className="text-[11px] text-[#8D8574] font-mono pt-1 border-t border-[rgba(61,58,52,0.06)] flex items-start gap-1.5">
+                  <span className="font-bold text-[#D97706] shrink-0">Evidence Cited:</span>
+                  <span className="italic text-[#655E4E]">{rx.evidence_base}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* EXECUTIVE DECISION MEMORANDUM & STATUTORY DIRECTIVE MODAL */}
+      {showMemoModal && prescriptionsData?.executive_decision_memo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto animate-fade-in">
+          <div className="bg-[#FAF9F5] w-full max-w-3xl rounded-2xl border border-[rgba(61,58,52,0.2)] shadow-2xl p-4 sm:p-8 space-y-5 my-auto max-h-[92vh] overflow-y-auto">
+            {/* Memo Official Header */}
+            <div className="flex items-start justify-between pb-3 sm:pb-4 border-b-2 border-[#1E1E1E]">
+              <div className="space-y-1 pr-2">
+                <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-widest text-[#8D8574] block font-bold">
+                  Government of India — Cabinet Secretariat / MoSPI
+                </span>
+                <h2 className="font-serif text-base sm:text-xl font-bold text-[#1B1C1A]">
+                  EXECUTIVE DECISION MEMORANDUM & STATUTORY DIRECTIVE
+                </h2>
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs font-mono pt-1">
+                  <span className="text-[#D97706] font-bold">Ref: {prescriptionsData.executive_decision_memo.memo_reference}</span>
+                  <span className="text-[#8D8574]">| Date: {prescriptionsData.executive_decision_memo.date}</span>
+                  <span className="badge-sienna text-[9px] px-2 py-0.5 rounded uppercase font-bold">
+                    {prescriptionsData.executive_decision_memo.classification}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowMemoModal(false)}
+                className="p-1.5 rounded-lg hover:bg-[#EFECE6] text-[#8D8574] cursor-pointer shrink-0"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Memo Subject */}
+            <div className="p-3 sm:p-3.5 rounded-xl bg-white border border-[rgba(61,58,52,0.12)] font-mono text-xs">
+              <span className="text-[#8D8574] uppercase text-[10px] block font-bold">SUBJECT:</span>
+              <span className="font-bold text-[#1B1C1A] text-xs sm:text-sm">
+                {prescriptionsData.executive_decision_memo.subject}
+              </span>
+            </div>
+
+            {/* Forensic Diagnosis */}
+            <div className="space-y-1.5 sm:space-y-2 text-xs leading-relaxed">
+              <h4 className="font-serif font-bold text-[#1B1C1A] uppercase tracking-wide">
+                1. Forensic Predictive Assessment & Ground Evidence:
+              </h4>
+              <p className="text-[#3D3A34] bg-white/60 p-3 sm:p-3.5 rounded-xl border border-[rgba(61,58,52,0.08)]">
+                {prescriptionsData.executive_decision_memo.forensic_diagnosis}
+              </p>
+            </div>
+
+            {/* Operative Orders */}
+            <div className="space-y-1.5 sm:space-y-2 text-xs leading-relaxed">
+              <h4 className="font-serif font-bold text-[#1B1C1A] uppercase tracking-wide">
+                2. Operative Prescriptive Directives (Under PMG Empowered Mandate):
+              </h4>
+              <div className="space-y-2">
+                {prescriptionsData.executive_decision_memo.operative_statutory_orders.map((order, idx) => (
+                  <div key={idx} className="p-2.5 sm:p-3 rounded-xl bg-white border border-[rgba(61,58,52,0.1)] text-[#1B1C1A] font-mono text-[11px]">
+                    <strong className="text-[#C25E3E] mr-1.5">●</strong>
+                    {order}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quantified Return Summary */}
+            <div className="p-3.5 sm:p-4 rounded-xl bg-[#1E1E1E] text-[#FAF9F5] font-mono text-xs space-y-2">
+              <span className="text-[10px] uppercase text-[#D97706] font-bold block">
+                3. Quantified Impact on Full Directive Compliance:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-1">
+                <div>
+                  <span className="text-[10px] text-[#A39D8F] block">Critical Delay Recovered</span>
+                  <span className="font-bold text-[#4A5D4E] text-sm sm:text-base">
+                    -{prescriptionsData.executive_decision_memo.quantified_decision_return.schedule_recovered_months} Months
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#A39D8F] block">Capital Overrun Preserved</span>
+                  <span className="font-bold text-[#D97706] text-sm sm:text-base">
+                    ₹ {prescriptionsData.executive_decision_memo.quantified_decision_return.capital_preserved_cr} Cr
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-[#A39D8F] block">Recalibrated Target</span>
+                  <span className="font-bold text-white text-sm sm:text-base">
+                    {new Date(prescriptionsData.executive_decision_memo.quantified_decision_return.recalibrated_commissioning_date).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Official Signoff Block & Actions */}
+            <div className="pt-3 border-t border-[rgba(61,58,52,0.1)] flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="font-serif italic text-xs text-[#655E4E]">
+                {prescriptionsData.executive_decision_memo.signoff}
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="btn-sovereign-secondary flex-1 sm:flex-initial px-3 sm:px-4 py-2 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Printer size={13} />
+                  <span>Print Memo</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowMemoModal(false)}
+                  className="btn-sovereign-primary flex-1 sm:flex-initial px-4 sm:px-5 py-2 text-xs font-semibold text-center cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* BOTTOM SECTION: ACTIVE ALERTS */}
       <div className="glass-card p-5 sm:p-6 rounded-2xl space-y-4">

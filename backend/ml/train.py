@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sys
 import json
 import joblib
@@ -37,10 +37,10 @@ def train_all_models():
     y_time = df['time_overrun_flag'].astype(int)
     y_risk = df['risk_score'].astype(float)
     
-    # Train / Test Split (80/20)
-    X_train, X_test, y_cost_train, y_cost_test = train_test_split(X, y_cost, test_size=0.2, random_state=42, stratify=y_cost)
-    _, _, y_time_train, y_time_test = train_test_split(X, y_time, test_size=0.2, random_state=42, stratify=y_time)
-    _, _, y_risk_train, y_risk_test = train_test_split(X, y_risk, test_size=0.2, random_state=42)
+    # Unified Train / Test Split (80/20) with synchronized row indices
+    X_train, X_test, y_cost_train, y_cost_test, y_time_train, y_time_test, y_risk_train, y_risk_test = train_test_split(
+        X, y_cost, y_time, y_risk, test_size=0.2, random_state=42, stratify=y_time
+    )
     
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)

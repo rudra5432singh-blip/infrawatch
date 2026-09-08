@@ -8,6 +8,7 @@ import Alerts from './pages/Alerts';
 import Benchmarks from './pages/Benchmarks';
 import CostDrivers from './pages/CostDrivers';
 import ProjectsMap from './pages/ProjectsMap';
+import ProjectsRegistry from './pages/ProjectsRegistry';
 
 export default function App() {
   return (
@@ -16,7 +17,7 @@ export default function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path="map" element={<ProjectsMap />} />
-          <Route path="projects" element={<Dashboard />} />
+          <Route path="projects" element={<ProjectsRegistry />} />
           <Route path="projects/:id" element={<ProjectDetail />} />
           <Route path="alerts" element={<Alerts />} />
           <Route path="benchmarks" element={<Benchmarks />} />

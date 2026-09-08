@@ -4,88 +4,88 @@
   "test_samples": 355,
   "cost_overrun_model": {
     "xgboost": {
-      "accuracy": 0.9662,
-      "precision": 0.9104,
-      "recall": 0.9104,
-      "f1": 0.9104,
-      "roc_auc": 0.9853
+      "accuracy": 0.9577,
+      "precision": 0.8519,
+      "recall": 0.8679,
+      "f1": 0.8598,
+      "roc_auc": 0.9888
     },
     "logistic_regression_baseline": {
-      "accuracy": 0.9465,
-      "precision": 0.9286,
-      "recall": 0.7761,
-      "f1": 0.8455,
-      "roc_auc": 0.9766
+      "accuracy": 0.9549,
+      "precision": 0.9512,
+      "recall": 0.7358,
+      "f1": 0.8298,
+      "roc_auc": 0.964
     }
   },
   "time_overrun_model": {
     "xgboost": {
-      "accuracy": 0.5577,
-      "precision": 0.5849,
-      "recall": 0.6425,
-      "f1": 0.6123,
-      "roc_auc": 0.5463
+      "accuracy": 0.9718,
+      "precision": 0.9645,
+      "recall": 0.9845,
+      "f1": 0.9744,
+      "roc_auc": 0.9973
     },
     "logistic_regression_baseline": {
-      "accuracy": 0.5352,
-      "precision": 0.547,
-      "recall": 0.8446,
-      "f1": 0.664,
-      "roc_auc": 0.487
+      "accuracy": 0.938,
+      "precision": 0.9572,
+      "recall": 0.9275,
+      "f1": 0.9421,
+      "roc_auc": 0.9891
     }
   },
   "risk_score_model": {
     "xgboost": {
-      "rmse": 21.0201,
-      "mae": 18.3128,
-      "r2": -0.0932
+      "rmse": 7.1134,
+      "mae": 4.5678,
+      "r2": 0.8516
     },
     "ridge_regression_baseline": {
-      "rmse": 20.2748,
-      "mae": 17.9622,
-      "r2": -0.0171
+      "rmse": 9.7799,
+      "mae": 7.1174,
+      "r2": 0.7195
     }
   },
   "top_global_risk_drivers": [
     {
-      "feature": "inspection_score",
-      "importance": 23.49
-    },
-    {
-      "feature": "actual_expenditure",
-      "importance": 10.63
+      "feature": "extension_revision_drag",
+      "importance": 24.81
     },
     {
       "feature": "budget_utilization_rate",
-      "importance": 9.51
+      "importance": 10.59
+    },
+    {
+      "feature": "inspection_score",
+      "importance": 7.8
     },
     {
       "feature": "sanctioned_duration",
-      "importance": 7.13
-    },
-    {
-      "feature": "revision_count",
-      "importance": 6.97
+      "importance": 7.43
     },
     {
       "feature": "financial_progress",
-      "importance": 6.2
+      "importance": 5.77
     },
     {
-      "feature": "no_of_extensions",
-      "importance": 4.22
+      "feature": "actual_expenditure",
+      "importance": 5.12
     },
     {
-      "feature": "sector_encoded",
-      "importance": 4.08
+      "feature": "revision_count",
+      "importance": 4.81
     },
     {
       "feature": "physical_financial_gap",
-      "importance": 3.12
+      "importance": 3.54
     },
     {
-      "feature": "disputes_count",
-      "importance": 2.82
+      "feature": "schedule_slippage_gap",
+      "importance": 3.27
+    },
+    {
+      "feature": "sector_encoded",
+      "importance": 2.54
     }
   ]
 }

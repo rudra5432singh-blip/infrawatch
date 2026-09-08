@@ -76,6 +76,7 @@ export default function ProjectsMap() {
   const [selectedSector, setSelectedSector] = useState('All');
   const [selectedRisk, setSelectedRisk] = useState('All');
   const [activeRegion, setActiveRegion] = useState('All India');
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   // Leaflet refs
   const mapContainerRef = useRef(null);
@@ -305,13 +306,128 @@ export default function ProjectsMap() {
   }, [selectedState]);
 
   return (
-    <div className="relative w-full h-[calc(100vh-5.5rem)] sm:h-[calc(100vh-6rem)] -m-3.5 sm:-m-6 md:-m-8 overflow-hidden flex flex-col bg-[#FAF9F5]">
+    <div className="relative w-full h-[calc(100vh-7.5rem)] md:h-[calc(100vh-6rem)] -m-3.5 sm:-m-6 md:-m-8 overflow-hidden flex flex-col bg-[#FAF9F5]">
       
       {/* 1. FLOATING SOVEREIGN INTELLIGENCE CONTROLS (TOP BAR) */}
-      <div className="absolute top-4 left-4 right-4 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pointer-events-none">
+      <div className="absolute top-2.5 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pointer-events-none">
         
-        {/* Left Search & Filter Capsule */}
-        <div className="flex flex-wrap items-center gap-2 pointer-events-auto bg-[#FAF9F5]/92 backdrop-blur-xl border border-[rgba(61,58,52,0.14)] p-2 rounded-2xl sm:rounded-full shadow-[0_12px_32px_rgba(61,58,52,0.12)]">
+        {/* Mobile Header Capsule: Search + Filter Toggle */}
+        <div className="flex sm:hidden items-center gap-2 pointer-events-auto bg-[#FAF9F5]/95 backdrop-blur-xl border border-[rgba(61,58,52,0.14)] p-1.5 rounded-2xl shadow-lg">
+          <div className="relative flex-1 flex items-center">
+            <Search size={14} className="absolute left-3 text-[#8D8574]" />
+            <input 
+              type="text" 
+              placeholder="Search asset, state..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-8 pr-3 py-1.5 text-xs bg-transparent rounded-full focus:outline-none placeholder-[#8D8574] text-[#1B1C1A]"
+            />
+            {searchTerm && (
+              <button onClick={() => setSearchTerm('')} className="pr-2 text-[#8D8574]">
+                <X size={12} />
+              </button>
+            )}
+          </div>
+
+          <button
+            onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              mobileFiltersOpen || selectedState !== 'All' || selectedSector !== 'All' || selectedRisk !== 'All'
+                ? 'bg-[#1E1E1E] text-white'
+                : 'bg-[#EFECE6] text-[#655E4E]'
+            }`}
+          >
+            <Filter size={13} />
+            <span>Filters</span>
+            {(selectedState !== 'All' || selectedSector !== 'All' || selectedRisk !== 'All') && (
+              <span className="w-1.5 h-1.5 rounded-full bg-[#D97706]" />
+            )}
+          </button>
+        </div>
+
+        {/* Mobile Slide-Down Filter Sheet */}
+        {mobileFiltersOpen && (
+          <div className="sm:hidden pointer-events-auto bg-[#FAF9F5]/96 backdrop-blur-2xl border border-[rgba(61,58,52,0.16)] p-3.5 rounded-2xl shadow-xl space-y-2.5 animate-fade-in text-xs">
+            <div className="flex items-center justify-between pb-1.5 border-b border-[rgba(61,58,52,0.08)]">
+              <span className="font-mono font-bold text-[#1B1C1A] text-[11px] uppercase">Filter Map Telemetry</span>
+              <button onClick={() => setMobileFiltersOpen(false)} className="text-[#8D8574] p-1">
+                <X size={14} />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <span className="text-[10px] font-mono text-[#8D8574] block mb-0.5">State</span>
+                <select
+                  value={selectedState}
+                  onChange={(e) => setSelectedState(e.target.value)}
+                  className="w-full text-xs bg-white border border-[rgba(61,58,52,0.14)] text-[#1B1C1A] py-1.5 px-2 rounded-lg"
+                >
+                  <option value="All">All States ({states.length - 1})</option>
+                  {states.filter(s => s !== 'All').map(st => (
+                    <option key={st} value={st}>{st}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <span className="text-[10px] font-mono text-[#8D8574] block mb-0.5">Sector</span>
+                <select
+                  value={selectedSector}
+                  onChange={(e) => setSelectedSector(e.target.value)}
+                  className="w-full text-xs bg-white border border-[rgba(61,58,52,0.14)] text-[#1B1C1A] py-1.5 px-2 rounded-lg"
+                >
+                  <option value="All">All Sectors</option>
+                  {sectors.filter(s => s !== 'All').map(sec => (
+                    <option key={sec} value={sec}>{sec}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <span className="text-[10px] font-mono text-[#8D8574] block mb-1">Risk Severity</span>
+              <div className="flex items-center gap-1">
+                {['All', 'High', 'Medium', 'Low'].map(risk => (
+                  <button
+                    key={risk}
+                    onClick={() => setSelectedRisk(risk)}
+                    className={`flex-1 py-1 text-[11px] font-medium rounded-lg transition-all ${
+                      selectedRisk === risk
+                        ? risk === 'High' ? 'bg-[#C25E3E] text-white' : risk === 'Medium' ? 'bg-[#D97706] text-white' : risk === 'Low' ? 'bg-[#4A5D4E] text-white' : 'bg-[#1E1E1E] text-white'
+                        : 'bg-[#EFECE6] text-[#655E4E]'
+                    }`}
+                  >
+                    {risk}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <span className="text-[10px] font-mono text-[#8D8574] block mb-1">Region Focus</span>
+              <div className="flex items-center gap-1 overflow-x-auto pb-1">
+                {Object.keys(REGION_BOUNDS).map(region => (
+                  <button
+                    key={region}
+                    onClick={() => {
+                      handleRegionChange(region);
+                      setMobileFiltersOpen(false);
+                    }}
+                    className={`px-2 py-0.5 text-[10px] font-semibold rounded-full whitespace-nowrap ${
+                      activeRegion === region ? 'bg-[#1E1E1E] text-white' : 'bg-[#EFECE6] text-[#655E4E]'
+                    }`}
+                  >
+                    {region}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Desktop Left Search & Filter Capsule */}
+        <div className="hidden sm:flex flex-wrap items-center gap-2 pointer-events-auto bg-[#FAF9F5]/92 backdrop-blur-xl border border-[rgba(61,58,52,0.14)] p-2 rounded-full shadow-[0_12px_32px_rgba(61,58,52,0.12)]">
           {/* Search */}
           <div className="relative flex items-center min-w-[170px] sm:min-w-[210px]">
             <Search size={14} className="absolute left-3 text-[#8D8574]" />
@@ -397,8 +513,8 @@ export default function ProjectsMap() {
           </div>
         </div>
 
-        {/* Right Regional Quick-Focus Strip */}
-        <div className="flex items-center gap-1 pointer-events-auto bg-[#FAF9F5]/92 backdrop-blur-xl border border-[rgba(61,58,52,0.14)] p-1.5 rounded-full shadow-[0_12px_32px_rgba(61,58,52,0.12)] overflow-x-auto">
+        {/* Desktop Right Regional Quick-Focus Strip */}
+        <div className="hidden sm:flex items-center gap-1 pointer-events-auto bg-[#FAF9F5]/92 backdrop-blur-xl border border-[rgba(61,58,52,0.14)] p-1.5 rounded-full shadow-[0_12px_32px_rgba(61,58,52,0.12)] overflow-x-auto">
           <span className="text-[10px] uppercase font-bold text-[#8D8574] px-2 flex items-center gap-1 shrink-0">
             <Compass size={12} className="text-[#D97706]" />
             Region:
@@ -419,8 +535,8 @@ export default function ProjectsMap() {
         </div>
       </div>
 
-      {/* 2. LIVE SURVEILLANCE HUD BAR (BOTTOM LEFT) */}
-      <div className="absolute bottom-6 left-6 z-20 pointer-events-auto bg-[#FAF9F5]/94 backdrop-blur-xl border border-[rgba(61,58,52,0.14)] p-3.5 rounded-2xl shadow-[0_16px_36px_rgba(61,58,52,0.14)] flex flex-wrap items-center gap-4 sm:gap-6">
+      {/* 2. LIVE SURVEILLANCE HUD BAR (BOTTOM LEFT - RESPONSIVE) */}
+      <div className="absolute bottom-2 sm:bottom-6 left-2 sm:left-6 right-2 sm:right-auto z-20 pointer-events-auto bg-[#FAF9F5]/95 backdrop-blur-xl border border-[rgba(61,58,52,0.14)] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl shadow-lg flex items-center justify-between sm:justify-start gap-3 sm:gap-6">
         <div>
           <div className="flex items-center gap-1.5 text-[10px] uppercase font-mono text-[#8D8574] tracking-wider">
             <span className="relative flex h-2 w-2">
@@ -429,20 +545,20 @@ export default function ProjectsMap() {
             </span>
             Geospatial Assets
           </div>
-          <div className="font-serif font-bold text-lg text-[#1B1C1A]">
-            {hudStats.total.toLocaleString('en-IN')} <span className="text-xs font-sans text-[#8D8574] font-normal">Active</span>
+          <div className="font-serif font-bold text-base sm:text-lg text-[#1B1C1A]">
+            {hudStats.total.toLocaleString('en-IN')} <span className="text-[11px] font-sans text-[#8D8574] font-normal">Active</span>
           </div>
         </div>
 
-        <div className="h-7 w-px bg-[rgba(61,58,52,0.12)]" />
+        <div className="h-6 sm:h-7 w-px bg-[rgba(61,58,52,0.12)]" />
 
         <div>
           <div className="text-[10px] uppercase font-mono text-[#C25E3E] tracking-wider flex items-center gap-1 font-semibold">
             <ShieldAlert size={11} />
             Severe Drift
           </div>
-          <div className="font-serif font-bold text-lg text-[#C25E3E]">
-            {hudStats.highRisk} <span className="text-xs font-sans text-[#8D8574] font-normal">Projects</span>
+          <div className="font-serif font-bold text-base sm:text-lg text-[#C25E3E]">
+            {hudStats.highRisk} <span className="text-[11px] font-sans text-[#8D8574] font-normal">Projects</span>
           </div>
         </div>
 
@@ -467,7 +583,7 @@ export default function ProjectsMap() {
         <button 
           onClick={fetchAllProjects}
           title="Refresh Geospatial Feed"
-          className="p-2 rounded-full text-[#8D8574] hover:text-[#1B1C1A] hover:bg-[#EFECE6] transition-colors ml-auto"
+          className="p-1.5 sm:p-2 rounded-full text-[#8D8574] hover:text-[#1B1C1A] hover:bg-[#EFECE6] transition-colors ml-auto cursor-pointer"
         >
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
         </button>
@@ -496,16 +612,18 @@ export default function ProjectsMap() {
         </div>
       )}
 
-      {/* 5. SLIDE-OVER PROJECT INSPECTOR DRAWER */}
+      {/* 5. SLIDE-OVER PROJECT INSPECTOR DRAWER (BOTTOM SHEET ON PHONES) */}
       <AnimatePresence>
         {selectedProject && (
           <motion.div
-            initial={{ opacity: 0, x: 80 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 80 }}
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 60 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="absolute top-20 right-4 sm:right-6 z-30 w-[calc(100%-2rem)] sm:w-96 max-h-[calc(100vh-12rem)] overflow-y-auto bg-[#FAF9F5]/95 backdrop-blur-2xl border border-[rgba(61,58,52,0.16)] rounded-3xl p-5 shadow-[0_24px_48px_-12px_rgba(61,58,52,0.22)] flex flex-col gap-4"
+            className="absolute bottom-0 sm:bottom-auto sm:top-20 left-0 sm:left-auto right-0 sm:right-6 z-30 w-full sm:w-96 max-h-[82vh] sm:max-h-[calc(100vh-12rem)] overflow-y-auto bg-[#FAF9F5]/96 backdrop-blur-2xl border-t sm:border border-[rgba(61,58,52,0.16)] rounded-t-3xl sm:rounded-3xl p-4 sm:p-5 shadow-[0_-12px_36px_rgba(61,58,52,0.22)] sm:shadow-[0_24px_48px_-12px_rgba(61,58,52,0.22)] flex flex-col gap-3.5 sm:gap-4"
           >
+            {/* Mobile Drag Handle */}
+            <div className="w-10 h-1 bg-[rgba(61,58,52,0.25)] rounded-full mx-auto sm:hidden -mt-1 mb-1 shrink-0" />
             {/* Header with Project ID and Close */}
             <div className="flex items-center justify-between border-b border-[rgba(61,58,52,0.08)] pb-3">
               <div className="flex items-center gap-2">

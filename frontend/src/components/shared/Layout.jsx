@@ -15,15 +15,26 @@ import {
   Menu, 
   X,
   MapPin,
-  TrendingUp
+  TrendingUp,
+  Play
 } from 'lucide-react';
 import HexLogo from './HexLogo';
+import WelcomeVideoModal from './WelcomeVideoModal';
 
 export default function Layout() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [timeStr, setTimeStr] = useState('');
+  const [showWelcomeVideo, setShowWelcomeVideo] = useState(() => {
+    return !localStorage.getItem('infrawatch_welcome_walkthrough_seen');
+  });
   const location = useLocation();
+
+  useEffect(() => {
+    const handleOpenVideo = () => setShowWelcomeVideo(true);
+    window.addEventListener('open-welcome-video', handleOpenVideo);
+    return () => window.removeEventListener('open-welcome-video', handleOpenVideo);
+  }, []);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -193,7 +204,22 @@ export default function Layout() {
             </span>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* AI Welcome & Walkthrough Video Button */}
+            <button
+              onClick={() => setShowWelcomeVideo(true)}
+              className="btn-sovereign-primary px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer group"
+              title="Watch AI Welcome & Walkthrough Video (20s)"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D97706] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D97706]"></span>
+              </span>
+              <Play size={11} className="text-[#D97706] fill-[#D97706] group-hover:scale-110 transition-transform" />
+              <span className="hidden sm:inline font-mono">AI Briefing</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-white/15 text-white">20s</span>
+            </button>
+
             <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-mono text-[#3D3A34] bg-[#FAF9F5]/90 border border-[rgba(61,58,52,0.12)] px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-medium shadow-2xs">
               <Clock size={13} className="text-[#D97706]" />
               <span>{timeStr || 'LIVE'}</span>
@@ -211,10 +237,49 @@ export default function Layout() {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-          className="flex-1 overflow-y-auto overflow-x-hidden p-3.5 sm:p-6 md:p-8"
+          className="flex-1 overflow-y-auto overflow-x-hidden p-3.5 sm:p-6 md:p-8 pb-20 md:pb-8"
         >
           <Outlet />
         </motion.main>
+
+        {/* MOBILE BOTTOM NAVIGATION DOCK (NATIVE APP FEEL ON PHONES) */}
+        <nav className="fixed bottom-0 left-0 right-0 z-30 md:hidden bg-[#FAF9F5]/94 backdrop-blur-2xl border-t border-[rgba(61,58,52,0.12)] px-2 py-1.5 flex items-center justify-around shadow-[0_-8px_24px_rgba(61,58,52,0.08)]">
+          {[
+            { to: '/', label: 'Overview', icon: LayoutDashboard },
+            { to: '/projects', label: 'Registry', icon: Layers },
+            { to: '/map', label: 'Map', icon: MapPin },
+            { to: '/alerts', label: 'Alerts', icon: AlertTriangle, badge: true },
+            { to: '/assistant', label: 'AI Core', icon: Bot }
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const isActive = location.pathname === tab.to || (tab.to !== '/' && location.pathname.startsWith(tab.to));
+            return (
+              <NavLink
+                key={tab.to}
+                to={tab.to}
+                className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all relative ${
+                  isActive ? 'text-[#1B1C1A]' : 'text-[#8D8574] hover:text-[#1B1C1A]'
+                }`}
+              >
+                <div className={`p-1 rounded-lg transition-all ${isActive ? 'bg-[#1E1E1E] text-white shadow-xs' : ''}`}>
+                  <Icon size={18} className={isActive ? 'text-[#D97706]' : ''} />
+                </div>
+                <span className={`text-[10px] font-medium tracking-tight mt-0.5 ${isActive ? 'font-bold text-[#1B1C1A]' : 'text-[#655E4E]'}`}>
+                  {tab.label}
+                </span>
+                {tab.badge && (
+                  <span className="absolute top-1 right-2 w-1.5 h-1.5 rounded-full bg-[#C25E3E] ring-1 ring-[#FAF9F5]" />
+                )}
+              </NavLink>
+            );
+          })}
+        </nav>
+
+        {/* AI WELCOME & WALKTHROUGH VIDEO MODAL */}
+        <WelcomeVideoModal 
+          isOpen={showWelcomeVideo} 
+          onClose={() => setShowWelcomeVideo(false)} 
+        />
       </div>
     </div>
   );

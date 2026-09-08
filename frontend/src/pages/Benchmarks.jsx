@@ -67,10 +67,10 @@ export default function Benchmarks() {
   const sectorBenchmarks = historicalData?.sector_benchmarks || [];
 
   // Model comparison metrics
-  const costXgb = benchmarks?.cost_overrun_model?.xgboost || { accuracy: 0.9662, precision: 0.9104, recall: 0.9104, f1: 0.9104, roc_auc: 0.9853 };
-  const costLr = benchmarks?.cost_overrun_model?.logistic_regression_baseline || { accuracy: 0.9465, precision: 0.9286, recall: 0.7761, f1: 0.8455, roc_auc: 0.9766 };
-  const timeXgb = benchmarks?.time_overrun_model?.xgboost || { accuracy: 0.5577, precision: 0.5849, recall: 0.6425, f1: 0.6123, roc_auc: 0.5463 };
-  const timeLr = benchmarks?.time_overrun_model?.logistic_regression_baseline || { accuracy: 0.5352, precision: 0.5470, recall: 0.8446, f1: 0.6640, roc_auc: 0.4870 };
+  const costXgb = benchmarks?.cost_overrun_model?.xgboost || { accuracy: 0.9577, precision: 0.8519, recall: 0.8679, f1: 0.8598, roc_auc: 0.9888 };
+  const costLr = benchmarks?.cost_overrun_model?.logistic_regression_baseline || { accuracy: 0.9549, precision: 0.9512, recall: 0.7358, f1: 0.8298, roc_auc: 0.9640 };
+  const timeXgb = benchmarks?.time_overrun_model?.xgboost || { accuracy: 0.9718, precision: 0.9645, recall: 0.9845, f1: 0.9744, roc_auc: 0.9973 };
+  const timeLr = benchmarks?.time_overrun_model?.logistic_regression_baseline || { accuracy: 0.9380, precision: 0.9572, recall: 0.9275, f1: 0.9421, roc_auc: 0.9891 };
 
   // Filtered & Sorted Sector Benchmarks
   const processedSectors = useMemo(() => {
@@ -179,12 +179,12 @@ export default function Benchmarks() {
         </div>
 
         {/* NAVIGATION TABS */}
-        <div className="flex flex-wrap items-center gap-2 mt-6 pt-5 border-t border-[rgba(61,58,52,0.08)]">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-[rgba(61,58,52,0.08)]">
           {[
-            { id: 'portfolio', label: 'Completed vs Ongoing Portfolio', icon: Layers },
-            { id: 'sectors', label: 'Sector Scorecard (22 Sectors)', icon: BarChart3 },
-            { id: 'agencies', label: 'Agency & Contractor Benchmarks', icon: Building2 },
-            { id: 'models', label: 'AI Model Performance Scorecard', icon: Zap }
+            { id: 'portfolio', label: 'Completed vs Ongoing Portfolio', shortLabel: 'Portfolio', icon: Layers },
+            { id: 'sectors', label: 'Sector Scorecard (22 Sectors)', shortLabel: 'Sectors', icon: BarChart3 },
+            { id: 'agencies', label: 'Agency & Contractor Benchmarks', shortLabel: 'Agencies', icon: Building2 },
+            { id: 'models', label: 'AI Model Performance Scorecard', shortLabel: 'AI Models', icon: Zap }
           ].map(tab => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -192,14 +192,15 @@ export default function Benchmarks() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                   active 
                     ? 'bg-[#1E1E1E] text-[#FAF9F5] shadow-xs' 
                     : 'bg-[#FAF9F5]/70 hover:bg-[#EFECE6] text-[#655E4E] border border-[rgba(61,58,52,0.08)]'
                 }`}
               >
                 <Icon size={14} className={active ? 'text-[#D97706]' : 'text-[#8D8574]'} />
-                <span>{tab.label}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.shortLabel}</span>
               </button>
             );
           })}
@@ -212,11 +213,11 @@ export default function Benchmarks() {
       {activeTab === 'portfolio' && (
         <div className="space-y-6">
           {/* 4 Comparative Metric Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="glass-card p-5 rounded-2xl space-y-2">
-              <div className="flex items-center justify-between text-xs text-[#8D8574]">
-                <span className="font-semibold uppercase tracking-wider">Completion Velocity</span>
-                <Clock size={15} className="text-[#D97706]" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+            <div className="glass-card p-3.5 sm:p-5 rounded-2xl space-y-1.5 sm:space-y-2">
+              <div className="flex items-center justify-between text-[10px] sm:text-xs text-[#8D8574]">
+                <span className="font-semibold uppercase tracking-wider truncate">Velocity</span>
+                <Clock size={13} className="text-[#D97706] shrink-0" />
               </div>
               <div className="text-2xl font-mono font-bold text-[#1B1C1A] tabular-nums">
                 {summary.historical_avg_completion_pace_pct_mo}% <span className="text-xs font-normal text-[#655E4E]">/ month</span>

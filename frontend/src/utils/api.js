@@ -19,6 +19,8 @@ export const getProjectDetail = (id) => api.get(`/projects/${id}`).then(res => r
 export const runProjectPredict = (id) => api.get(`/projects/${id}/predict`).then(res => res.data);
 export const runProjectExplain = (id) => api.get(`/projects/${id}/explain`).then(res => res.data);
 export const getProjectForecast = (id) => api.get(`/projects/${id}/forecast`).then(res => res.data);
+export const getProjectPrescriptions = (id) => api.get(`/projects/${id}/prescriptions`).then(res => res.data);
+export const getPrescriptiveRadar = () => api.get('/stats/prescriptive-radar').then(res => res.data);
 export const simulateProjectIntervention = (id, adjustments) => 
   api.post(`/projects/${id}/simulate`, { adjustments }).then(res => res.data);
 
@@ -27,6 +29,9 @@ export const resolveAlert = (id) => api.post(`/alerts/${id}/resolve`).then(res =
 export const resolveAllAlerts = () => api.post('/alerts/resolve-all').then(res => res.data);
 
 export const getAssistantBriefing = () => api.get('/assistant/briefing').then(res => res.data);
+export const getAssistantStatus = () => api.get('/assistant/status').then(res => res.data);
+export const configureAssistantKey = (provider, api_key) => 
+  api.post('/assistant/configure', { provider, api_key }).then(res => res.data);
 export const sendAssistantMessage = (message, history) => 
   api.post('/assistant/chat', { message, history }).then(res => res.data);
 

@@ -1,4 +1,4 @@
-﻿import os
+import os
 import datetime
 import numpy as np
 import pandas as pd
@@ -16,7 +16,8 @@ NUMERIC_FEATURE_COLS = [
     'physical_progress', 'financial_progress',
     'revision_count', 'no_of_extensions', 'inspection_score', 'disputes_count',
     'budget_utilization_rate', 'physical_financial_gap',
-    'revision_pressure', 'inspection_recency_days', 'extension_rate'
+    'revision_pressure', 'inspection_recency_days', 'extension_rate',
+    'regulatory_friction_score', 'extension_revision_drag', 'schedule_slippage_gap'
 ]
 
 ALL_FEATURE_COLS = NUMERIC_FEATURE_COLS + [f'{c}_encoded' for c in CATEGORICAL_COLS]
@@ -24,9 +25,15 @@ ALL_FEATURE_COLS = NUMERIC_FEATURE_COLS + [f'{c}_encoded' for c in CATEGORICAL_C
 def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     
-    df['sanctioned_cost'] = pd.to_numeric(df['sanctioned_cost'], errors='coerce').fillna(100.0).clip(lower=1.0)
-    df['actual_expenditure'] = pd.to_numeric(df['actual_expenditure'], errors='coerce').fillna(0.0).clip(lower=0.0)
-    df['sanctioned_duration'] = pd.to_numeric(df['sanctioned_duration'], errors='coerce').fillna(24).clip(lower=1)
+    for c in CATEGORICAL_COLS:
+        if c not in df.columns:
+            df[c] = 'Unknown'
+    if 'last_inspection_date' not in df.columns:
+        df['last_inspection_date'] = None
+
+    df['sanctioned_cost'] = pd.to_numeric(df.get('sanctioned_cost', 100.0), errors='coerce').fillna(100.0).clip(lower=1.0)
+    df['actual_expenditure'] = pd.to_numeric(df.get('actual_expenditure', 0.0), errors='coerce').fillna(0.0).clip(lower=0.0)
+    df['sanctioned_duration'] = pd.to_numeric(df.get('sanctioned_duration', 24), errors='coerce').fillna(24).clip(lower=1)
     
     df['physical_progress'] = pd.to_numeric(df['physical_progress'], errors='coerce').fillna(50.0).clip(0.0, 100.0)
     df['financial_progress'] = pd.to_numeric(df['financial_progress'], errors='coerce').fillna(50.0).clip(0.0, 100.0)
@@ -36,13 +43,24 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     df['inspection_score'] = pd.to_numeric(df['inspection_score'], errors='coerce').fillna(7.5).clip(0.0, 10.0)
     df['disputes_count'] = pd.to_numeric(df['disputes_count'], errors='coerce').fillna(0).clip(lower=0)
     
-    # Ratios
+    # Ratios & Derived Telemetry
     df['budget_utilization_rate'] = df['actual_expenditure'] / df['sanctioned_cost']
     df['physical_financial_gap'] = df['physical_progress'] - df['financial_progress']
     
     years_sanc = (df['sanctioned_duration'] / 12.0).clip(lower=1.0)
     df['revision_pressure'] = df['revision_count'] / years_sanc
     df['extension_rate'] = df['no_of_extensions'] / years_sanc
+    df['extension_revision_drag'] = (df['revision_count'] * 1.5) + (df['no_of_extensions'] * 2.0)
+    
+    # Regulatory friction score based on land, env, forest statuses
+    land_friction = df['land_acquisition_status'].map({'Complete': 0.0, 'Partial': 1.5, 'Not Started': 3.0}).fillna(1.0)
+    env_friction = df['environment_clearance'].map({'Obtained': 0.0, 'Pending': 2.0, 'Exempted': 0.0}).fillna(0.5)
+    forest_friction = df['forest_clearance'].map({'Obtained': 0.0, 'Pending': 2.5, 'Exempted': 0.0}).fillna(0.5)
+    df['regulatory_friction_score'] = land_friction + env_friction + forest_friction + (df['disputes_count'] * 1.2)
+    
+    # Schedule slippage gap: expected progress vs physical progress
+    expected_pct = (df['financial_progress'] * 0.9).clip(0.0, 100.0)
+    df['schedule_slippage_gap'] = expected_pct - df['physical_progress']
     
     def calc_recency(date_val):
         if not date_val or pd.isna(date_val):
